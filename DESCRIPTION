@@ -1,0 +1,26 @@
+Package: tipmap
+Type: Package
+Title: Tipping Point Analysis for Bayesian Dynamic Borrowing
+Version: 0.3.9
+Authors@R: c(
+    person("Morten", "Dreher", role = "aut"),
+    person("Christian", "Stock", email = "christian.stock@boehringer-ingelheim.com", role = c("aut","cre"), comment = c(ORCID = "0000-0002-3493-3234")),
+    person("Emma", "Torrini", role = "ctb")
+    )
+Description: Tipping point analysis for clinical trials that employ Bayesian dynamic borrowing via robust meta-analytic predictive (MAP) priors. Mainly an implementation of an approach proposed by Best and colleagues (2021) is provided <doi:10.1002/pst.2093>. Further functions facilitate the specification of the robust MAP prior via expert elicitation (using the roulette method) and computation of the posterior distribution of the treatment effect with either fixed or stochastic expert-elicited weights. Intended use is the planning, analysis and interpretation of extrapolation studies in pediatric drug development, but applicability is generally wider.
+License: GPL (>= 3)
+Encoding: UTF-8
+Imports: dplyr, purrr, ggplot2, RBesT
+Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
+Config/testthat/edition: 3
+RoxygenNote: 7.2.1
+VignetteBuilder: knitr
+Depends: R (>= 3.5.0)
+NeedsCompilation: no
+Packaged: 2022-12-07 21:22:04 UTC; stockch
+Author: Morten Dreher [aut],
+  Christian Stock [aut, cre] (<https://orcid.org/0000-0002-3493-3234>),
+  Emma Torrini [ctb]
+Maintainer: Christian Stock <christian.stock@boehringer-ingelheim.com>
+Repository: CRAN
+Date/Publication: 2022-12-07 21:50:02 UTC
