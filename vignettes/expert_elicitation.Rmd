@@ -1,0 +1,427 @@
+---
+title: "Determining sensible weights via expert elicitation (DRAFT)"
+package: tipmap
+author: "Christian Stock"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_document:
+          theme: "default"
+          highlight: "default"
+          toc: true
+          toc_float: true
+bibliography: references.bib
+csl: jrss_style.csl
+vignette: >
+  %\VignetteIndexEntry{Determining sensible weights via expert elicitation (DRAFT)}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  chunk_output_type: console
+---
+
+
+```{r setup, include = F}
+knitr::opts_chunk$set(
+  echo = T, collapse = T, warning = F, message = F, 
+  prompt = T, comment = "#", out.width = "100%"
+)
+```
+
+
+## Expert elicitation for weight determination
+
+Usually, in a clinical trial project that uses Bayesian dynamic borrowing via MAP priors, a weight of the informative component of the MAP prior would have to be determined, which needs to be pre-specified (@Ionan2022).
+
+Expert elicitation can be used to determine this weight.
+
+Definition: Expert elicitation is a way through which expert judgement can be formally considered for statistical inference and decision making.
+It is a process of expressing expert knowledge about uncertain quantities as subjective probability distributions.
+This is practically desirable since it allows for realistic inferences in face of sparse data.
+
+There is extensive literature on expert elicitaton (@Brownstein2019, @OHagan2019, ). 
+And the is experience in drug development (@Dallow2018).
+
+Taking care of biases (@Kynn2008).
+
+Sheffield elicitation framework (@OHagan2019, @Gosling2018, @Best2020).
+The **SHELF** package is available to facilitate implementation in R (@SHELFv4).
+
+This vignette provides a description of how expert elicitation can be used.
+It is not a description of expert elicitation process itself, it shows how data can be collected and processed. It is based on and closely resembles SHELF, but is much more limited, in the sense that it only considered determination of one weight parameter (a variable on the scale [0,1]).
+
+The data in this example are hypothetical data.
+
+
+```{r, eval=T, echo=T}
+library(tipmap)
+```
+
+
+## Collecting weight data using the roulette method
+
+Task description for elicitation via the roulette method:
+10 chips need to be placed to create histogram like data.
+No particular shape of symmetry is needed.
+
+### Fit beta distributions to roulette data
+
+In close resemblence to `SHELF`-package.
+This function is based on `SHELF::fitdist` and yields identical results.
+
+A single expert:
+```{r chips_single, eval=T, echo=T}
+chips_1exp <- c(1, 3, 4, 2, 0, 0, 0, 0, 0, 0)
+# Compute cumulative probabilities
+(x <- get_cum_probs_1exp(chips_1exp))
+# Compute model inputs
+(y <- get_model_input_1exp(x))
+# Fit beta distribution
+(fit_1exp <- fit_beta_1exp(df = y)$par)
+```
+
+For multiple experts the individual steps are handled by the `fit_beta_mult_exp`-function.
+
+```{r chips_multiple, eval=T, echo=T}
+beta_fits <- fit_beta_mult_exp(
+chips_mult <-
+  rbind(
+      c(1, 3, 4, 2, 0, 0, 0, 0, 0, 0),
+      c(0, 2, 3, 2, 2, 1, 0, 0, 0, 0),
+      c(0, 1, 3, 2, 2, 1, 1, 0, 0, 0),
+      c(1, 3, 3, 2, 1, 0, 0, 0, 0, 0),
+      c(0, 1, 4, 3, 2, 0, 0, 0, 0, 0)
+      )
+  )
+beta_fits
+```
+
+
+### Summary statistics
+
+Summary statistics can be obtained analytically or through samples from the beta distribution:
+
+Analytically:
+
+```{r fit_beta_1a, eval=T, echo=F}
+(alpha <- fit_1exp[1]); (beta <- fit_1exp[2])
+
+# Mean
+(beta_mean <- alpha/(alpha+beta))
+
+# Standard deviation
+beta_sd <- sqrt( (alpha*beta)/( (alpha+beta)^2 *(alpha+beta+1) ) )
+beta_sd
+
+#Mean absolute deviation around the mean
+beta_mad_mean <- (2*(alpha^alpha)*(beta^beta))/( beta(alpha, beta) * (alpha+beta)^(alpha+beta+1) )
+beta_mad_mean
+
+
+# Mode
+if (alpha > 1 & beta >1) beta_mode <- (alpha-1)/(alpha+beta-2)
+if (alpha > 1 & beta >1) beta_mode <- 0.5
+beta_mode
+
+# Quantiles
+qbeta(p = c(0.001, 0.025, 0.05, 0.1, 0.5, 0.9, 0.95, 0.975, 0.99),
+      shape1 = alpha, shape2 = beta)
+
+
+# Samples
+x <- rbeta(n = 10^6, shape1 = alpha, shape2 = beta)
+mean(x)
+sd(x)
+```
+
+
+
+
+
+Through samples:
+
+```{r fit_beta_2a, eval=F, echo=F}
+expert_samples <- draw_beta_mixture_nsamples(n=10^4, chips_mult=chips_mult) 
+summary(expert_samples)
+```
+
+```{r fit_beta_2b, eval=F, echo=F}
+(mean_w <- round(mean(expert_samples), 2))
+```
+
+### Figure without linear pool
+```{r elicitfig1, eval=F, echo=F, message=F, fig.align='center', fig.width=8, fig.height=4, fig.keep='all', fig.pos="!ht", dev=c('pdf', 'png'), out.width="0.98\\textwidth"}
+fits_mat <- as.matrix(beta_fits[,c(1,2)])
+# Wide format
+fit_beta_mult_plot_wide <- tibble(
+ x = seq(0.001, 0.999, length = 200),
+ Expert1 = dbeta(x, fits_mat[1,1], fits_mat[1,2]),
+ Expert2 = dbeta(x, fits_mat[2,1], fits_mat[2,2]),
+ Expert3 = dbeta(x, fits_mat[3,1], fits_mat[3,2]),
+ Expert4 = dbeta(x, fits_mat[4,1], fits_mat[4,2]),
+ Expert5 = dbeta(x, fits_mat[5,1], fits_mat[5,2])
+)
+# Long format
+fit_beta_mult_plot_long <- fit_beta_mult_plot_wide %>%
+  tidyr::pivot_longer(
+    !x,
+    names_to = "Expert",
+    values_to = "dens")
+# Plot without linear pool
+fig_betas_1 <- ggplot(
+  data = fit_beta_mult_plot_long,
+  aes(x = x, y = dens, goup = Expert)
+  ) +
+  geom_line(aes(color = Expert)) +
+ ggtitle("Fitted beta distributions") +
+ xlab("Weight") + ylab("Density") +
+ scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10) / 10) +
+ theme_bw()
+fig_betas_1
+```
+
+### Figure with linear pool
+```{r elicitfig2, eval=F, echo=F, message=F, fig.align='center', fig.width=8, fig.height=4, fig.keep='all', fig.pos="!ht", dev=c('pdf', 'png'), out.width="0.98\\textwidth"}
+# Wide format
+fit_beta_mult_plot_wide2 <- fit_beta_mult_plot_wide %>%
+  mutate(linpool = (Expert1 + Expert2 + Expert3 + Expert4 + Expert5)/5)
+# Long format
+fit_beta_mult_plot_long2 <- fit_beta_mult_plot_wide %>%
+  tidyr::pivot_longer(
+    !x,
+    names_to = "Expert",
+    values_to = "dens")
+# Plot
+fig_betas_2 <- ggplot(
+  data = fit_beta_mult_plot_long2,
+  aes(x = x, y = dens, group = Expert)) +
+  geom_line(aes(color = Expert ) ) +
+  ggtitle("Fitted beta distributions and linear pool") +
+  xlab("Weight") + ylab("Density") +
+  scale_x_continuous(breaks=c(0,1,2,3,4,5,6,7,8,9,10)/10) +
+  theme_bw() +
+  geom_line(data = fit_beta_mult_plot_wide2,
+            aes(x = x, y = linpool, group = 1),
+            size=1)
+fig_betas_2
+```
+
+
+
+## New trial in children
+
+```{r pedact, eval=F, echo=F}
+incre <- 3
+ped_act <- create_new_trial_data(
+  n_total = n_total_children, 
+  est = summary(map)["mean"], 
+  se = (sigma1+incre)/sqrt(n_total_children)
+  )
+```
+
+
+## Computing posteriors
+
+
+### Tipping point plot
+
+
+```{r tpact1plotref, eval=F, echo=F, message=F, fig.align='center', fig.width=9, fig.height=4.5, fig.keep='all', fig.pos="!ht", dev=c('pdf', 'png'), out.width="0.98\\textwidth"}
+tipmap_act_dat %>% tipmap_plot(y_lab = "Treatment effect estimate") +
+  geom_vline(xintercept = mean_w, color="darkgreen")
+```
+
+
+```{r tpact1plot, eval=F, echo=F, message=F, fig.align='center', fig.width=9, fig.height=4.5, fig.keep='all', fig.pos="!ht", dev=c('pdf', 'png'), out.width="0.98\\textwidth"}
+tipmap_act_dat <- create_tipmap_data(
+  new_trial_data = ped_act,
+  posterior = post_act_dat,
+  map_prior = map,
+  meta_analysis = ma) 
+tipmap_act_dat %>% tipmap_plot(y_lab = "Treatment effect estimate")
+```
+
+```{r tpact, eval=F, echo=F}
+get_tipping_points(tipmap_act_dat, quantile = c(0.025, 0.05, 0.1, 0.2))
+```
+
+```{r tphypo1plot, eval=F, echo=F, message=F, fig.align='center', fig.width=9, fig.height=4.5, fig.keep='all', fig.pos="!ht", dev=c('pdf', 'png'), out.width="0.98\\textwidth"}
+tipmap_hypo1_dat <- create_tipmap_data(
+  new_trial_data = ped_hypo1,
+  posterior = post_hypo1_dat,
+  map_prior = map,
+  meta_analysis = ma) 
+tipmap_hypo1_dat %>% 
+  tipmap_plot(y_lab = "Treatment effect estimate", 
+              y_range = c(-3.2, 2.2),
+              y_breaks = c(-3, -2, -1, 0, 1, 2))
+```
+```{r tphypo1, eval=F, echo=F}
+get_tipping_points(tipmap_hypo1_dat, quantile = c(0.025, 0.05, 0.1, 0.2))
+```
+
+
+### Posterior for primary weight
+
+```{r postbywact1, eval=F, echo=F}
+get_posterior_by_weight(posterior = post_act_dat, weight = mean_w)
+```
+
+```{r postbywact2a, eval=F, echo=F}
+prior_primary <- RBesT::robustify(
+  priormix = map,
+  weight = (1 - mean_w),
+  m = 0,
+  n = 1,
+  sigma = sigma2
+  ) %T>% print()
+```
+```{r postbywact2b, eval=F, echo=F}
+posterior_primary <- RBesT::postmix(
+  priormix = prior_primary,
+  m = ped_act["mean"],
+  se = ped_act["se"]
+  ) %T>% print()
+```
+
+```{r postbywact2c, eval=F, echo=F}
+summary(posterior_primary)
+```
+
+```{r postbywact2d, eval=F, echo=F}
+# Posterior probability that delta > x
+round(1 - pmix(posterior_primary, q = 0), 3)
+round(1 - pmix(posterior_primary, q = 0.5), 3)
+round(1 - pmix(posterior_primary, q = 1), 3)
+round(1 - pmix(posterior_primary, q = ped_act["mean"]), 3)
+round(1 - pmix(posterior_primary, q = ped_act["q0.5"]), 3)
+```
+
+```{r postprobprim, eval=F, echo=F, message=F, fig.align='center', fig.width=8, fig.height=4.5, fig.keep='all', fig.pos="!ht", dev=c('pdf', 'png'), out.width="0.98\\textwidth"}
+plot(posterior_primary, fun = pmix) +
+  scale_x_continuous(breaks = seq(-1, 2, 0.5)) +
+  scale_y_continuous(breaks = 1-c(1, 0.973, 0.938, 0.835, 0.5, 0), 
+                     limits = c(0,1),
+                     expand = c(0,0)
+                     ) +
+  ylab(paste("Cumulative density of posterior with w=", mean_w, sep="")) +
+  xlab("Quantile") +
+  geom_segment(aes(x = 0,
+                   y = pmix(mix = posterior_primary, q = 0), 
+                   xend = 0, 
+                   yend = 1), 
+               col="red") +
+  geom_segment(aes(x = 0.5,
+                   y = pmix(mix = posterior_primary, q = 0.5), 
+                   xend = 0.5, 
+                   yend = 1), 
+               col="red") + 
+  geom_segment(aes(x = 1,
+                   y = pmix(mix = posterior_primary, q = 1), 
+                   xend = 1, 
+                   yend = 1), 
+               col="red") + 
+  theme_bw()
+
+```
+
+
+### Uncertainty propagation with elicited weights
+```{r uncertweight1, eval=F, echo=F}
+get_stochast_weight_posterior2 <- function(
+  map_prior, 
+  new_trial_dat, 
+  weights, 
+  n_posterior_samples,
+  null_effect = 0, 
+  sigma) {
+  # checks
+  if (!(is.numeric(weights))) stop("weights must be a numeric vector")
+  if (!(is.numeric(n_posterior_samples))) stop("n_posterior_samples must be a numeric vector")
+  if ((!(is.numeric(sigma))) || length(sigma) > 1) 
+        stop("sigma must be a numeric vector of length 1")
+  # computing stochastic weight posterior
+  arr <- array(dim = c(
+    length(weights), 
+    n_posterior_samples
+    ))
+  for (i in 1:length(weights)) {
+    robust_mix_prior <- RBesT::robustify(
+      priormix = map_prior, 
+      weight = (1 - weights[i]), 
+      n = 1, 
+      mean = null_effect, 
+      sigma = sigma)
+    posterior <- RBesT::postmix(
+      priormix = robust_mix_prior, 
+      m = new_trial_dat["mean"], 
+      se = new_trial_dat["se"])
+    arr[i, ] <- RBesT::rmix(posterior, n=n_posterior_samples)
+    }
+  posterior_dat <- c(arr)
+  return(posterior_dat)
+  }
+```
+
+```{r uncertweight2, eval=F, echo=F}
+post_uncertprop <- get_stochast_weight_posterior2(
+  map_prior = map,
+  new_trial_dat = ped_act,
+  weights = expert_samples[1:500],
+  n_posterior_samples = 1000,
+  sigma = sigma2
+) 
+summary(post_uncertprop)
+sd(post_uncertprop)
+quantile(post_uncertprop, probs = c(0.025, 0.5, 0.975))
+```
+
+```{r uncertweight3, eval=F, echo=F}
+dat <- tibble(
+  label = c(paste0("Posterior for w=", mean_w),
+            "Posterior based on stochastic w"),
+  est = c(summary(posterior_primary)["mean"],  mean(post_uncertprop)),
+  lcl = c(summary(posterior_primary)[" 2.5%"], quantile(post_uncertprop,probs = c(0.025))),
+  ucl = c(summary(posterior_primary)["97.5%"], quantile(post_uncertprop,probs = c(0.975))),
+  se  = 1) %T>% 
+  print()
+```
+
+```{r uncertweight4, eval=F, echo=F}
+ma <- metagen(data = dat, TE = est, studlab = label, seTE = se)
+ma$lower <- dat$lcl
+ma$upper <- dat$ucl
+```
+
+
+```{r custom_forest1, eval=F, echo=F, fig.align='center', fig.width=7, fig.height=2.52, fig.keep='all', fig.pos="!ht", dev=c('pdf', 'png'), out.width="0.95\\textwidth"}
+forest(
+  x = ma, 
+  rightcols=c("effect", "ci"), 
+  random=F, 
+  common=F, 
+  leftcols=c("studlab"),
+  overall.hetstat = F,
+  xlim=c(-1, 4), 
+  marks = c(-3:4),
+  col.study = c("blue", "blue"),
+  colgap.forest.left  = "3mm",
+  colgap.forest.right = "10mm",
+  leftlabs = c(""),
+  rightlabs = c("Est.","(95% CrI)"),
+  xlab = "Treatment effect estimate (95% CrI)",
+  addrows = 0.5
+  )
+```
+
+
+
+
+
+
+
+## References
+
+
+
+
+
