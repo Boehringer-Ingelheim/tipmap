@@ -10,8 +10,8 @@ output:
           highlight: "default"
           toc: true
           toc_float: true
-#bibliography: references.bib
-#csl: jrss_style.csl
+# bibliography: references.bib
+# csl: jrss_style.csl
 vignette: >
   %\VignetteIndexEntry{Introduction to the R package 'tipmap'}
   %\VignetteEncoding{UTF-8}
@@ -41,12 +41,12 @@ This vignette shows an exemplary application of the tipping point analysis with 
 
 Further functions in this package (not illustrated in this vignette) facilitate the specification of a robust MAP prior via expert elicitation, specifically the choice of a primary weight, using the roulette method, as well as the computation of the posterior distribution of the treatment effect with stochastic weights elicited from a panel of experts. 
 
-Intended use of the **tipmap**-package is the planning, analysis and interpretation of (small) clinical trials in pediatric drug development, where extrapolation of efficacy, often through Bayesian methods, has become increasingly common (Gamalo *et al*., 2022; ICH, 2022). However, the applicability of the package is generally wider.
+Intended use of the **tipmap**-package is the planning, analysis and interpretation of (small) clinical trials in pediatric drug development, where extrapolation of efficacy, often through Bayesian methods, has become increasingly common (Gamalo *et al*., 2022; ICH, 2022; Ionan *et al*., 2022). However, the applicability of the package is generally wider.
 
 For the implementation of the MAP prior approach, including computation of the posterior distribution, the **RBesT**-package is used (Weber *et al*., 2021).
 
 
-## Data generation for an exemplary tipping point analysis
+## Generating data for an exemplary tipping point analysis
 
 In this vignette, we assume that results from three clinical trials conducted in adult patients (the _source_ population) are available, which share key features with a new trial among pediatric patients (the _target_ population).
 For example, they had been conducted in the same indication, studied the same drug and provided results on an endpoint of interest for the target population. This means a certain degree of _exchangeability_ between the trials in the source and target population can be assumed. 
@@ -330,19 +330,21 @@ round(1 - RBesT::pmix(posterior_95p, q = 0), 3)
 
 ## References
 
-Best, N., Price, R. G., Pouliquen, I. J., et al. (2021) Assessing efficacy in important subgroups in confirmatory trials: An example using Bayesian dynamic borrowing. *Pharm Stat*, 20, 551–562. DOI: [10.1002/pst.2093](https://doi.org/10.1002/pst.2093)
+Best, N., Price, R. G., Pouliquen, I. J., et al. (2021) Assessing efficacy in important subgroups in confirmatory trials: An example using Bayesian dynamic borrowing. *Pharm Stat*, 20, 551–562. DOI: [10.1002/pst.2093](https://doi.org/10.1002/pst.2093).
 
-Gamalo, M., Bucci-Rechtweg, C., Nelson, R. M., et al. (2022) Extrapolation as a Default Strategy in Pediatric Drug Development. *Ther Innov Regul Sci*, 56, 883–894. DOI: [10.1007/s43441-021-00367-9](https://doi.org/10.1007/s43441-021-00367-9)
+Gamalo, M., Bucci-Rechtweg, C., Nelson, R. M., et al. (2022) Extrapolation as a Default Strategy in Pediatric Drug Development. *Ther Innov Regul Sci*, 56, 883–894. DOI: [10.1007/s43441-021-00367-9](https://doi.org/10.1007/s43441-021-00367-9).
 
-Held, L., Matthews, R., Ott, M., et al. (2022) Reverse-Bayes methods for evidence assessment and research synthesis. *Res Synth Methods*, 13, 295–314. DOI: [10.1002/jrsm.1538](https://doi.org/10.1002/jrsm.1538)
+Held, L., Matthews, R., Ott, M., et al. (2022) Reverse-Bayes methods for evidence assessment and research synthesis. *Res Synth Methods*, 13, 295–314. DOI: [10.1002/jrsm.1538](https://doi.org/10.1002/jrsm.1538).
 
 ICH (2022) International Council for Harmonisation of Technical Requirements for Pharmaceuticals for Human Use (ICH) guideline E11A on pediatric extrapolation.  [EMA/CHMP/ICH/205218/2022](https://www.ema.europa.eu/en/ich-guideline-e11a-pediatric-extrapolation-scientific-guideline).
 
-Neuenschwander, B. and Schmidli, H. (2020) Use of Historical Data. In Bayesian Methods in Pharmaceutical Research (eds E. Lesaffre, G. Baio, and B. Boulanger), pp. 111–129. 1st ed. Chapman & Hall/ CRC Biostatistics Series. DOI: [10.1201/9781315180212](https://doi.org/10.1201/9781315180212)
+Ionan, A.C., Clark J., Travis J., et al. (2022) Bayesian Methods in Human Drug and Biological Products Development in CDER and CBER. *Ther Innov Regul Sci*, to appear. DOI: [10.1007/s43441-022-00483-0](https://doi.org/10.1007/s43441-022-00483-0).
 
-Schmidli, H., Gsteiger, S., Roychoudhury, S., et al. (2014) Robust meta-analytic-predictive priors in clinical trials with historical control information. *Biometrics*, 70, 1023–1032. DOI: [10.1111/biom.12242](https://doi.org/10.1111/biom.12242)
+Neuenschwander, B. and Schmidli, H. (2020) Use of Historical Data. In Bayesian Methods in Pharmaceutical Research (eds. Lesaffre, E., Baio, G., and Boulanger, B.), 111–129. 1st ed. Chapman & Hall/ CRC Biostatistics Series. DOI: [10.1201/9781315180212](https://doi.org/10.1201/9781315180212).
 
-Weber, S., Li, Y., Seaman III, J. W., et al. (2021) Applying Meta-Analytic-Predictive Priors with the R Bayesian Evidence Synthesis Tools. *J Stat Softw*, 100, 1–32. DOI: [10.18637/jss.v100.i19](https://doi.org/10.18637/jss.v100.i19)
+Schmidli, H., Gsteiger, S., Roychoudhury, S., et al. (2014) Robust  meta-analytic-predictive priors in clinical trials with historical control information. *Biometrics*, 70, 1023–1032. DOI: [10.1111/biom.12242](https://doi.org/10.1111/biom.12242).
+
+Weber, S., Li, Y., Seaman III, J. W., et al. (2021) Applying Meta-Analytic-Predictive Priors with the R Bayesian Evidence Synthesis Tools. *J Stat Softw*, 100, 1–32. DOI: [10.18637/jss.v100.i19](https://doi.org/10.18637/jss.v100.i19).
 
 
 

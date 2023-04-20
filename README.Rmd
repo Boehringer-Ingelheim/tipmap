@@ -1,22 +1,28 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 # tipmap
 
 <!-- badges: start -->
-
 [![](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![](https://www.r-pkg.org/badges/version/tipmap)](https://cran.r-project.org/package=tipmap)
 [![](http://cranlogs.r-pkg.org/badges/last-month/tipmap)](https://cran.r-project.org/package=tipmap)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tipmap)](https://cran.r-project.org/package=tipmap)
 <!-- badges: end -->
 
-The `tipmap` package aims to facilitate the planning and analysis of
-partial extrapolation studies in pediatric drug development. It provides
-an implementation of a Bayesian tipping point approach based on robust
-meta-analytic predictive (MAP) priors, with further functions
-facilitating expert elicitation of a primary weight of the informative
-component of the prior.
+The `tipmap` package aims to facilitate the planning and analysis of partial extrapolation studies in pediatric drug development. It provides an implementation of a Bayesian tipping point approach based on robust meta-analytic predictive (MAP) priors, with further functions facilitating expert elicitation of a primary weight of the informative component of the prior.
 
 ## Installation
 
@@ -27,6 +33,7 @@ install.packages("tipmap")
 ```
 
 ## Example
+
 
 ``` r
 library(tipmap)
