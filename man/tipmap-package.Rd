@@ -8,6 +8,14 @@
 \description{
 Tipping point analysis for clinical trials that employ Bayesian dynamic borrowing via robust meta-analytic predictive (MAP) priors. Mainly an implementation of an approach proposed by Best and colleagues (2021) is provided \doi{10.1002/pst.2093}. Further functions facilitate the specification of the robust MAP prior via expert elicitation (using the roulette method) and computation of the posterior distribution of the treatment effect with either fixed or stochastic expert-elicited weights. Intended use is the planning, analysis and interpretation of extrapolation studies in pediatric drug development, but applicability is generally wider.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/chstock/tipmap}
+  \item Report bugs at \url{https://github.com/chstock/tipmap/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Christian Stock \email{christian.stock@boehringer-ingelheim.com} (\href{https://orcid.org/0000-0002-3493-3234}{ORCID})
 
