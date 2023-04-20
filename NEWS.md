@@ -1,7 +1,8 @@
 ## tipmap 0.4.0
 
 * New vignette on weight determination via expert elicitation 
-* Minor modification in documentation
+* Updated README file
+* Minor modifications in documentation
 
 ## tipmap 0.3.9
 
