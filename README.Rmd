@@ -7,7 +7,7 @@ output: github_document
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
+  comment = "#>", prompt = TRUE,
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
@@ -26,35 +26,52 @@ The `tipmap` package aims to facilitate the planning and analysis of partial ext
 
 ## Installation
 
-To install `tipmap` use:
+**CRAN**
 
-``` r
+You can install the current stable version from CRAN with:
+
+```{r cran-installation, eval = FALSE}
 install.packages("tipmap")
 ```
 
-## Example
+**GitHub**
 
+You can install the current development version from GitHub with:
 
-``` r
-library(tipmap)
-ped_trial <- create_new_trial_data(
-  n_total = 30, 
-  est = 1.27, 
-  se = 0.95
-)
-ped_trial
+```{r gh-installation, eval = FALSE}
+if (!require("remotes")) {install.packages("remotes")}
+remotes::install_github("chstock/tipmap")
 ```
 
-``` r
+## Getting started
+
+Load the package:
+```{r example01, eval = FALSE}
+library(tipmap)
+```
+
+The prior data (collected in the source population):
+```{r example02, eval = FALSE}
 prior_data <- create_prior_data(
   n_total = c(160, 240, 320),
   est = c(1.23, 1.40, 1.51),
   se = c(0.4, 0.36, 0.31)
 )
-prior_data
+print(prior_data)
 ```
 
-``` r
+The data from the new trial (collected in the target population):
+```{r example03, eval = FALSE}
+ped_trial <- create_new_trial_data(
+  n_total = 30, 
+  est = 1.27, 
+  se = 0.95
+)
+print(ped_trial)
+```
+
+Derivation of the meta-analytic predictive (MAP) prior:
+```{r example04, eval = FALSE}
 uisd <- sqrt(ped_trial["n_total"]) * ped_trial["se"]
 g_map <-
   RBesT::gMAP(
@@ -68,7 +85,7 @@ g_map <-
   )
 ```
 
-``` r
+```{r example05, eval = FALSE}
 map_prior <-
   RBesT::automixfit(
     sample = g_map,
@@ -76,31 +93,42 @@ map_prior <-
     k = 6,
     thresh = -Inf
   )
-map_prior
+print(map_prior)
 ```
 
-``` r
+Computing the posterior distribution:
+```{r example06, eval = FALSE}
 posterior <- create_posterior_data(
   map_prior = map_prior,
   new_trial_data = ped_trial,
   sigma = uisd)
-posterior
+print(posterior)
 ```
 
-``` r
+Create data for a tipping point analysis (tipping point plot):
+```{r example07, eval = FALSE}
 tipmap_data <- create_tipmap_data(
   new_trial_data = ped_trial,
   posterior = posterior,
   map_prior = map_prior)
 ```
 
-``` r
+Create tipping point plot:
+```{r example08, eval = FALSE}
 tipmap_plot(tipmap_data = tipmap_data)
 ```
 
-``` r
+Get tipping points:
+```{r example09, eval = FALSE}
 get_tipping_points(
   tipmap_data, 
   quantile = c(0.025, 0.05, 0.1, 0.2), 
   null_effect = 0.1)
 ```
+
+
+
+## Citing `tipmap`
+
+To cite `tipmap` in publications please use: Morten Dreher and Christian Stock (2022). tipmap: Tipping Point Analysis for Bayesian Dynamic Borrowing. R package version 0.3.9. URL: https://CRAN.R-project.org/package=tipmap
+
