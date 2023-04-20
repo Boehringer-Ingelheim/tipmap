@@ -15,7 +15,7 @@ Encoding: UTF-8
 Imports: dplyr, purrr, ggplot2, RBesT
 Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
 Config/testthat/edition: 3
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Depends: R (>= 3.5.0)
 NeedsCompilation: no
