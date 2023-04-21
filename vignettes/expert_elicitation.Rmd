@@ -1,5 +1,5 @@
 ---
-title: "Determining weights of the informative prior component via expert elicitation"
+title: "Determining a weight of the informative prior component"
 package: tipmap
 author: "Christian Stock"
 date: "`r Sys.Date()`"
@@ -9,16 +9,15 @@ output:
           highlight: "default"
           toc: true
           toc_float: true
-bibliography: references.bib
-csl: jrss_style.csl
+#bibliography: references.bib
+#csl: jrss_style.csl
 vignette: >
-  %\VignetteIndexEntry{Determining weights of the informative prior component via expert elicitation}
+  %\VignetteIndexEntry{Determining a weight of the informative prior component}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options:
   chunk_output_type: console
 ---
-
 
 ```{r setup, include = F}
 knitr::opts_chunk$set(
@@ -30,30 +29,30 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-In a clinical trial project that uses Bayesian dynamic borrowing via meta-analytic predictive (MAP) priors, ideally a pre-specified weight of the informative component of the MAP prior needs to be determined (@Ionan2022).
+In a clinical trial project that uses Bayesian dynamic borrowing via meta-analytic predictive (MAP) priors, ideally a pre-specified weight of the informative component of the MAP prior needs to be determined (Ionan2022).
 Expert elicitation is a way through which expert judgement can be formally considered for statistical inference and decision making and it can be used to determine this weight.
 
-For reviews on expert elicitaton see e.g.@Brownstein2019 and @OHagan2019, and for experiences with expert elicitation in drug development see e.g. @Dallow2018.
+For reviews on expert elicitaton see e.g. Brownstein2019 and OHagan2019, and for experiences with expert elicitation in drug development see e.g. Dallow2018.
 
-The Sheffield elicitation framework (SHELF) is an established framework that is used for the conduct of expert elicitation (@OHagan2019, @Gosling2018, @Best2020), and the SHELF package is available to facilitate implementation in R (@SHELFv4).
+The Sheffield elicitation framework (SHELF) is an established framework that is used for the conduct of expert elicitation (OHagan2019, Gosling2018, Best2020), and the SHELF package is available to facilitate implementation in R (SHELFv4).
 
 This vignette provides a brief description of how expert elicitation can be used in a Bayesian borrowing analysis using robust MAP priors. It is not a description of the expert elicitation process, it shows how elicited data can be processed. It is based on and closely resembles functions in the SHELF package, but is much more limited, in the sense that it only considered determination of one weight parameter (a variable on the scale [0,1]).
 
 The data in this example are hypothetical data.
 
 Loading the `tipmap` package:
-```{r, eval=T, echo=T}
+```{r, eval=F, echo=T}
 library(tipmap)
 ```
 
 
 ## Expert weightings collected using the roulette method
 
-Here, the expert data are assumed to be collected via the 'roulette method' (@Gosling2018, @Dallow2018).
+Here, the expert data are assumed to be collected via the 'roulette method' (Gosling2018, Dallow2018).
 The experts are asked to place 10 chips into a grid to create histogram-like data that reflects their preferred weighting. No particular shape of symmetry is needed.
 
 Data from a single expert:
-```{r chips_single1, eval=T, echo=T}
+```{r chips_single1, eval=F, echo=T}
 chips_1exp <- c(1, 3, 4, 2, 0, 0, 0, 0, 0, 0)
 sum(chips_1exp)
 ```
@@ -63,7 +62,7 @@ sum(chips_1exp)
 The roulette data are assumed to follow a beta distribution. The following calculation and fitting of a beta distribution is similar to an implementation in `SHELF::fitdist` and yields identical results.
 
 Data from a single expert:
-```{r chips_single2, eval=T, echo=T}
+```{r chips_single2, eval=F, echo=T}
 # Compute cumulative probabilities
 (x <- get_cum_probs_1exp(chips_1exp))
 # Compute model inputs
@@ -74,7 +73,7 @@ Data from a single expert:
 
 For multiple experts the individual steps are handled by the `fit_beta_mult_exp`-function:
 
-```{r chips_multiple, eval=T, echo=T}
+```{r chips_multiple, eval=F, echo=T}
 beta_fits <- fit_beta_mult_exp(
 chips_mult <-
   rbind(
@@ -93,7 +92,7 @@ beta_fits
 
 Summary statistics for a single expert:
 
-```{r fit_beta_1a, eval=T, echo=T}
+```{r fit_beta_1a, eval=F, echo=T}
 (alpha <- fit_1exp[1]); (beta <- fit_1exp[2])
 
 # Mean
@@ -124,12 +123,12 @@ sd(x)
 
 Summary statistics for data from multiple experts:
 
-```{r fit_beta_2a, eval=T, echo=T}
+```{r fit_beta_2a, eval=F, echo=T}
 expert_samples <- draw_beta_mixture_nsamples(n=10^3, chips_mult=chips_mult) 
 summary(expert_samples)
 ```
 
-```{r fit_beta_2b, eval=T, echo=T}
+```{r fit_beta_2b, eval=F, echo=T}
 (mean_w <- round(mean(expert_samples), 2))
 ```
 
@@ -137,14 +136,14 @@ Mean or median values of the pooled distribution may be used as primary weights 
 
 ## Figures 
 
-```{r load_libs, eval=T, echo=T}
+```{r load_libs, eval=F, echo=T}
 # Load libraries
 packages <- c("magrittr", "ggplot2", "tibble", "dplyr")
 invisible(lapply(packages, library, character.only = T))
 ```
 
 ### Without linear pooling
-```{r elicitfig1a, eval=T, echo=T}
+```{r elicitfig1a, eval=F, echo=T}
 # Create matrix
 fits_mat <- as.matrix(beta_fits[,c(1,2)])
 # Wide format
@@ -164,7 +163,7 @@ fit_beta_mult_plot_long <- fit_beta_mult_plot_wide %>%
     values_to = "dens")
 ```
 
-```{r elicitfig1b, eval=T, echo=T, fig.width=8, fig.height=5, dev=c('png','pdf'), out.width="95%"}
+```{r elicitfig1b, eval=F, echo=T, fig.width=8, fig.height=5, dev=c('png'), out.width="95%"}
 # Plot without linear pool
 fig_betas_1 <- ggplot(
   data = fit_beta_mult_plot_long,
@@ -179,7 +178,7 @@ print(fig_betas_1)
 ```
 
 ### With linear pooling
-```{r elicitfig2a, eval=T, echo=T}
+```{r elicitfig2a, eval=F, echo=T}
 # Wide format
 fit_beta_mult_plot_wide2 <- fit_beta_mult_plot_wide %>%
   mutate(linpool = (Expert1 + Expert2 + Expert3 + Expert4 + Expert5)/5)
@@ -191,7 +190,7 @@ fit_beta_mult_plot_long2 <- fit_beta_mult_plot_wide %>%
     values_to = "dens")
 ```
 
-```{r elicitfig2b, eval=T, echo=T, fig.width=8, fig.height=5, dev=c('png','pdf'), out.width="95%"}
+```{r elicitfig2b, eval=F, echo=T, fig.width=8, fig.height=5, dev=c('png'), out.width="95%"}
 # Plot
 fig_betas_2 <- ggplot(
   data = fit_beta_mult_plot_long2,
@@ -212,6 +211,16 @@ print(fig_betas_2)
 ## References
 
 
+Best, N., Dallow, N. and Montague, T. (2020) Prior Elicitation. In: Lesaffre E, Baio G, Boulanger B (editors). Bayesian Methods in Pharmaceutical Research. CRC Press.
 
+Dallow, N., Best, N. and Montague, T. H. (2018) Better decision making in drug development through adoption of formal prior elicitation. Pharm Stat, 17, 301–316.
+
+Gosling, J. P. (2018) SHELF: The sheffield elicitation framework. In Elicitation: The Science and Art of Structuring Judgement (eds L. C. Dias, A. Morton, and J. Quigley), pp. 61–93. Springer International Publishing.
+
+Ionan, A. C., Clark, J., Travis, J., et al. (2022) Bayesian Methods in Human Drug and Biological Products Development in CDER and CBER. Ther Innov Regul Sci,, to appear.
+
+O’Hagan, A. (2019) Expert Knowledge Elicitation: Subjective but Scientific. Am Stat, 73, 69–81. Taylor & Francis.
+
+The Sheffield Elicitation Framework (2019) URL: [http://www.tonyohagan.co.uk/shelf/shelf4.html](http://www.tonyohagan.co.uk/shelf/shelf4.html), version 4.
 
 
