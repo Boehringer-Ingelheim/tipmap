@@ -9,8 +9,10 @@ output:
           highlight: "default"
           toc: true
           toc_float: true
-#bibliography: references.bib
-#csl: jrss_style.csl
+bibliography: references.bib
+csl: jrss_style.csl
+#bibliography: '`r system.file("references.bib", package="tipmap")`'
+#csl: '`r system.file("jrss_style.csl", package="tipmap")`'
 vignette: >
   %\VignetteIndexEntry{Determining a weight of the informative prior component}
   %\VignetteEncoding{UTF-8}
@@ -29,12 +31,12 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-In a clinical trial project that uses Bayesian dynamic borrowing via meta-analytic predictive (MAP) priors, ideally a pre-specified weight of the informative component of the MAP prior needs to be determined (Ionan2022).
+In a clinical trial project that uses Bayesian dynamic borrowing via meta-analytic predictive (MAP) priors, ideally a pre-specified weight of the informative component of the MAP prior needs to be determined (@Ionan2023).
 Expert elicitation is a way through which expert judgement can be formally considered for statistical inference and decision making and it can be used to determine this weight.
 
-For reviews on expert elicitaton see e.g. Brownstein2019 and OHagan2019, and for experiences with expert elicitation in drug development see e.g. Dallow2018.
+For reviews on expert elicitaton see e.g. @Brownstein2019 and @OHagan2019, and for experiences with expert elicitation in drug development see e.g. @Dallow2018.
 
-The Sheffield elicitation framework (SHELF) is an established framework that is used for the conduct of expert elicitation (OHagan2019, Gosling2018, Best2020), and the SHELF package is available to facilitate implementation in R (SHELFv4).
+The Sheffield elicitation framework (SHELF) is an established framework that is used for the conduct of expert elicitation (@OHagan2019, @Gosling2018, @Best2020), and the SHELF package is available to facilitate implementation in R (@SHELFv4).
 
 This vignette provides a brief description of how expert elicitation can be used in a Bayesian borrowing analysis using robust MAP priors. It is not a description of the expert elicitation process, it shows how elicited data can be processed. It is based on and closely resembles functions in the SHELF package, but is much more limited, in the sense that it only considered determination of one weight parameter (a variable on the scale [0,1]).
 
@@ -48,7 +50,7 @@ library(tipmap)
 
 ## Expert weightings collected using the roulette method
 
-Here, the expert data are assumed to be collected via the 'roulette method' (Gosling2018, Dallow2018).
+Here, the expert data are assumed to be collected via the 'roulette method' (@Gosling2018, @Dallow2018).
 The experts are asked to place 10 chips into a grid to create histogram-like data that reflects their preferred weighting. No particular shape of symmetry is needed.
 
 Data from a single expert:
@@ -210,7 +212,7 @@ print(fig_betas_2)
 
 ## References
 
-
+<!--
 Best, N., Dallow, N. and Montague, T. (2020) Prior Elicitation. In: Lesaffre E, Baio G, Boulanger B (editors). Bayesian Methods in Pharmaceutical Research. CRC Press.
 
 Dallow, N., Best, N. and Montague, T. H. (2018) Better decision making in drug development through adoption of formal prior elicitation. Pharm Stat, 17, 301–316.
@@ -222,5 +224,5 @@ Ionan, A. C., Clark, J., Travis, J., et al. (2022) Bayesian Methods in Human Dru
 O’Hagan, A. (2019) Expert Knowledge Elicitation: Subjective but Scientific. Am Stat, 73, 69–81. Taylor & Francis.
 
 The Sheffield Elicitation Framework (2019) URL: [http://www.tonyohagan.co.uk/shelf/shelf4.html](http://www.tonyohagan.co.uk/shelf/shelf4.html), version 4.
-
+-->
 

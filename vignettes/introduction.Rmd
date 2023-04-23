@@ -1,5 +1,5 @@
 ---
-title: "Introduction to the R package 'tipmap'"
+title: "Introduction to the 'tipmap' package"
 subtitle: "Tipping point analysis for clinical trials that employ Bayesian dynamic borrowing" 
 package: tipmap
 author: "Christian Stock"
@@ -10,10 +10,12 @@ output:
           highlight: "default"
           toc: true
           toc_float: true
-# bibliography: references.bib
-# csl: jrss_style.csl
+bibliography: references.bib
+csl: jrss_style.csl
+#bibliography: '`r system.file("references.bib", package="tipmap")`'
+#csl: '`r system.file("jrss_style.csl", package="tipmap")`'
 vignette: >
-  %\VignetteIndexEntry{Introduction to the R package 'tipmap'}
+  %\VignetteIndexEntry{Introduction to the 'tipmap' package}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options:
@@ -27,23 +29,27 @@ knitr::opts_chunk$set(
   prompt = T, comment = "#",
   out.width = "100%"
 )
+library(ggplot2)
+ggplot2::theme_set(theme_bw())
 ```
 
 
 ## Purpose of the package
 
-The R package **tipmap** implements a tipping point analysis for clinical trials that employ Bayesian dynamic borrowing of a treatment effect from external evidence via robust meta-analytic predictive (MAP) priors. A tipping point analysis allows to assess how much weight on the informative component of a robust MAP prior is needed to conclude that the investigated treatment is efficacious, based on the total evidence. The package mainly provides an implementation of a graphical approach proposed by (Best *et al*., 2021) for different one-sided evidence levels (80%, 90%, 95%, 97.5%).
+The R package **tipmap** implements a tipping point analysis for clinical trials that employ Bayesian dynamic borrowing of a treatment effect from external evidence via robust meta-analytic predictive (MAP) priors. A tipping point analysis allows to assess how much weight on the informative component of a robust MAP prior is needed to conclude that the investigated treatment is efficacious, based on the total evidence. The package mainly provides an implementation of a graphical approach proposed by @Best2021 for different one-sided evidence levels (80%, 90%, 95%, 97.5%).
 
-Tipping point analyses can be useful both at the planning and the analysis stage of a trial that uses external information. At the _planning stage_, they can help determining (pre-specifying) a weight of the informative component of the MAP prior for the primary analysis. 
-Various possible results of the planned trial in the target population and the consequences for the treatment effect estimate and statistical inferences based on the total evidence may be explored for a range of weights. Through this exercise, in addition to other criteria, decision-makers can develop a sense under which circumstances they would still feel comfortable to establish efficacy with a specific level of certainty. A preferred weight can then rather straightforwardly be derived. The tipping point analysis can thus help to elicit sensible weights. At the _analysis stage_, tipping point analyses can be used as sensitivity analysis to assess the dependency of the treatment effect estimate and statistical inferences on weight of the informative component of the MAP prior. This may also be understood in the sense of a reverse-Bayes analysis (Held *et al*., 2022).
+Tipping point analyses can be useful both at the planning and the analysis stage of a clinical trial that uses external information. At the _planning stage_, they can help to determe (pre-specify) a weight of the informative component of the MAP prior for a primary analysis. 
+Various possible results of the planned trial in the target population and implications for the treatment effect estimate and statistical inferences based on the total evidence may be explored for a range of weights. 
+Through this exercise, in addition to other criteria, decision-makers can develop a sense under which circumstances they would still feel comfortable to establish efficacy with a specific level of certainty. A preferred primary weight will typically be a compromise between the belief in the applicability of the data and operating characteristics of the resulting design specifications.
+At the _analysis stage_, tipping point analyses can be used as a sensitivity analysis to assess the dependency of the treatment effect estimate and statistical inferences on the weight of the informative component of the MAP prior. This can also be understood in the sense of a reverse-Bayes analysis (@Held2022).
 
 This vignette shows an exemplary application of the tipping point analysis with hypothetical data.
 
 Further functions in this package (not illustrated in this vignette) facilitate the specification of a robust MAP prior via expert elicitation, specifically the choice of a primary weight, using the roulette method, as well as the computation of the posterior distribution of the treatment effect with stochastic weights elicited from a panel of experts. 
 
-Intended use of the **tipmap**-package is the planning, analysis and interpretation of (small) clinical trials in pediatric drug development, where extrapolation of efficacy, often through Bayesian methods, has become increasingly common (Gamalo *et al*., 2022; ICH, 2022; Ionan *et al*., 2022). However, the applicability of the package is generally wider.
+Intended use of the **tipmap**-package is the planning, analysis and interpretation of (small) clinical trials in pediatric drug development, where extrapolation of efficacy, often through Bayesian methods, has become increasingly common (@Gamalo2022; @ICHE11A; @Ionan2023). However, the applicability of the package is generally wider.
 
-For the implementation of the MAP prior approach, including computation of the posterior distribution, the **RBesT**-package is used (Weber *et al*., 2021).
+For the implementation of the MAP prior approach, including computation of the posterior distribution, the **RBesT**-package is used (@Weber2021).
 
 
 ## Generating data for an exemplary tipping point analysis
@@ -52,7 +58,7 @@ In this vignette, we assume that results from three clinical trials conducted in
 For example, they had been conducted in the same indication, studied the same drug and provided results on an endpoint of interest for the target population. This means a certain degree of _exchangeability_ between the trials in the source and target population can be assumed. 
 The similarity in disease and response to treatment between source and target population always need to be carefully considered in any setting, usually by clinical experts in the disease area. 
 
-We assume that it is supported by medical evidence and now planned to consider the trials in adult patients in a Bayesian dynamic borrowing approach, and we would like to create a robust MAP prior (Schmidli *et al*., 2014). The treatment effect measure of interest is assumed to be a mean difference between a treated group and a control group with respect to a continuous endpoint.
+We assume that it is supported by medical evidence and now planned to consider the trials in adult patients in a Bayesian dynamic borrowing approach, and we would like to create a robust MAP prior (@Schmidli2014). The treatment effect measure of interest is assumed to be a mean difference between a treated group and a control group with respect to a continuous endpoint.
 
 ### Derivation of MAP prior based on trials in the source population
 
@@ -84,7 +90,7 @@ sigma2 # = 5.41652
 print(prior_data)
 ```
 
-We then generate a MAP prior from our prior data using the **RBesT**-package (Weber *et al*., 2021).
+We then generate a MAP prior from our prior data using the **RBesT**-package (@Weber2021).
 ```{r, eval=T, echo=T}
 set.seed(123)
 uisd <- 5.42
@@ -99,7 +105,7 @@ map_mcmc <- RBesT::gMAP(
   )
 ```
 
-A few additional specifications are needed to be made to fit the MAP prior model; for details see Neuenschwander and Schmidli (2020) or Weber *et al*. (2021). The variable `uisd` here represents an assumed unit-information standard deviation and the specification of the prior on between-trial heterogeneity parameter tau follows recommendations to consider moderate heterogeneity for a two-group parameter, such as the mean difference (Neuenschwander and Schmidli, 2020).
+A few additional specifications are needed to be made to fit the MAP prior model; for details see Neuenschwander and @Schmidli2020 or @Weber2021. The variable `uisd` here represents an assumed unit-information standard deviation and the specification of the prior on between-trial heterogeneity parameter tau follows recommendations to consider moderate heterogeneity for a two-group parameter, such as the mean difference (@Neuenschwander2020).
 
 This is a summary of the fitted model based on samples from the posterior distribution:
 ```{r, eval=T, echo=T}
@@ -203,7 +209,7 @@ tipmap_data <- create_tipmap_data(
 (p1 <- tipmap_plot(tipmap_data = tipmap_data))
 ```
 
-In the center of the plot, a funnel-shaped display of quantiles of the posterior distribution (reflecting one-sided evidence-levels) is shown for given weights of the informative component of the MAP prior. The intersections between the lines connecting the respective quantiles and the horizontal line at 0 (the null effect) are referred to as tipping points (indicated by vertical lines in red color). They indictae the minimum weight that is required to conclude that the treatment is efficacious for a given one-sided evidence level (Best *et al*., 2021).
+In the center of the plot, a funnel-shaped display of quantiles of the posterior distribution (reflecting one-sided evidence-levels) is shown for given weights of the informative component of the MAP prior. The intersections between the lines connecting the respective quantiles and the horizontal line at 0 (the null effect) are referred to as tipping points (indicated by vertical lines in red color). They indictae the minimum weight that is required to conclude that the treatment is efficacious for a given one-sided evidence level (@Best2021).
 On the left and right side of the plot, the treatment effect estimate obtained in the trial in the (pediatric) target population (with 95% confidence interval) and the MAP prior (with 95% credible interval) are shown, respectively.
 
 The plot is a `ggplot`-object that can be modified accordingly.
@@ -330,6 +336,7 @@ round(1 - RBesT::pmix(posterior_95p, q = 0), 3)
 
 ## References
 
+<!--
 Best, N., Price, R. G., Pouliquen, I. J., et al. (2021) Assessing efficacy in important subgroups in confirmatory trials: An example using Bayesian dynamic borrowing. *Pharm Stat*, 20, 551–562. DOI: [10.1002/pst.2093](https://doi.org/10.1002/pst.2093).
 
 Gamalo, M., Bucci-Rechtweg, C., Nelson, R. M., et al. (2022) Extrapolation as a Default Strategy in Pediatric Drug Development. *Ther Innov Regul Sci*, 56, 883–894. DOI: [10.1007/s43441-021-00367-9](https://doi.org/10.1007/s43441-021-00367-9).
@@ -345,6 +352,6 @@ Neuenschwander, B. and Schmidli, H. (2020) Use of Historical Data. In Bayesian M
 Schmidli, H., Gsteiger, S., Roychoudhury, S., et al. (2014) Robust  meta-analytic-predictive priors in clinical trials with historical control information. *Biometrics*, 70, 1023–1032. DOI: [10.1111/biom.12242](https://doi.org/10.1111/biom.12242).
 
 Weber, S., Li, Y., Seaman III, J. W., et al. (2021) Applying Meta-Analytic-Predictive Priors with the R Bayesian Evidence Synthesis Tools. *J Stat Softw*, 100, 1–32. DOI: [10.18637/jss.v100.i19](https://doi.org/10.18637/jss.v100.i19).
-
+-->
 
 
