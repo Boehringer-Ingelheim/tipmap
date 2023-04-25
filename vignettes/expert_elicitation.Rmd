@@ -24,7 +24,7 @@ editor_options:
 ```{r setup, include = F}
 knitr::opts_chunk$set(
   echo = T, collapse = T, warning = F, message = F, 
-  prompt = F, comment = "#", out.width = "100%"
+  prompt = T, comment = "#", out.width = "100%"
 )
 ```
 
@@ -42,9 +42,10 @@ This vignette provides a brief description of how expert elicitation can be used
 
 The data in this example are hypothetical data.
 
-Loading the `tipmap` package:
+Loading the `tipmap` package and `set.seed`:
 ```{r, eval=T, echo=T}
 library(tipmap)
+set.seed(123)
 ```
 
 
@@ -208,21 +209,33 @@ fig_betas_2 <- ggplot(
 print(fig_betas_2)
 ```
 
+## Use of a distribution of weights
+
+Instead of mean or median values we may also want to use samples from the pooled distribution of weights to compute the posterior to reflect the uncertainty in the choice of an appropriate weight. This is faciliated in the function `get_stochast_weight_posterior`.
+
+```{r use_w_dist1, eval=T, echo=T}
+map_prior <- load_tipmap_data("tipmapPrior.rds")
+new_trial_dat <- create_new_trial_data(
+  n_total = 30, est = 1.17, se = 0.95
+)
+post_stochast_w <- get_stochast_weight_posterior(
+  map_prior = map_prior,
+  new_trial_dat = new_trial_dat,
+  weights = expert_samples[1:50], # example for 50 samples only
+  n_posterior_samples = 10,
+  sigma = 12
+)
+```
+
+This function computes the posterior for each sampled weight and draws a specified number of samples from each posterior. For example, if 50 weights are supplied and `n_posterior_samples = 10`, then the function returns `r 50 * 10` posterior samples.
+
+```{r use_w_dist2, eval=T, echo=T}
+length(post_stochast_w)
+summary(post_stochast_w)
+```
 
 
 ## References
 
-<!--
-Best, N., Dallow, N. and Montague, T. (2020) Prior Elicitation. In: Lesaffre E, Baio G, Boulanger B (editors). Bayesian Methods in Pharmaceutical Research. CRC Press.
 
-Dallow, N., Best, N. and Montague, T. H. (2018) Better decision making in drug development through adoption of formal prior elicitation. Pharm Stat, 17, 301–316.
-
-Gosling, J. P. (2018) SHELF: The Sheffield Elicitation Framework. In Elicitation: The Science and Art of Structuring Judgement (eds L. C. Dias, A. Morton, and J. Quigley), pp. 61–93. Springer International Publishing.
-
-Ionan, A. C., Clark, J., Travis, J., et al. (2022) Bayesian Methods in Human Drug and Biological Products Development in CDER and CBER. Ther Innov Regul Sci,, to appear.
-
-O’Hagan, A. (2019) Expert Knowledge Elicitation: Subjective but Scientific. Am Stat, 73, 69–81. Taylor & Francis.
-
-The Sheffield Elicitation Framework (2019) URL: [http://www.tonyohagan.co.uk/shelf/shelf4.html](http://www.tonyohagan.co.uk/shelf/shelf4.html), version 4.
--->
 

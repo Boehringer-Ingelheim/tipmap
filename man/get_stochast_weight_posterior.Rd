@@ -8,7 +8,7 @@ get_stochast_weight_posterior(
   map_prior,
   new_trial_dat,
   weights,
-  n_posterior_samples,
+  n_posterior_samples = 10,
   null_effect = 0,
   sigma
 )
