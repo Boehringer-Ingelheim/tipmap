@@ -1,12 +1,30 @@
 Package: tipmap
 Type: Package
 Title: Tipping Point Analysis for Bayesian Dynamic Borrowing
-Version: 0.4.1
+Version: 0.4.2
 Authors@R: c(
-    person("Morten", "Dreher", role = "aut"),
-    person("Christian", "Stock", email = "christian.stock@boehringer-ingelheim.com", role = c("aut","cre"), comment = c(ORCID = "0000-0002-3493-3234")),
-    person("Emma", "Torrini", role = "ctb")
+  person(
+    given = "Morten",
+    family = "Dreher",
+    role = c("aut")
+    ),
+  person(
+    given = "Christian",
+    family = "Stock",
+    role = c("aut", "cre"),
+    email = "christian.stock@boehringer-ingelheim.com",
+    comment = c(ORCID = "0000-0002-3493-3234")
+    ),
+  person(
+    given = "Emma",
+    family = "Torrini",
+    role = c("ctb")
+    ),  
+  person(
+    family = "Boehringer Ingelheim Pharma GmbH & Co. KG",
+    role = c("cph", "fnd")
     )
+  )
 Description: Tipping point analysis for clinical trials that employ Bayesian dynamic borrowing via robust meta-analytic predictive (MAP) priors. Mainly an implementation of an approach proposed by Best and colleagues (2021) is provided <doi:10.1002/pst.2093>. Further functions facilitate the specification of the robust MAP prior via expert elicitation (using the roulette method) and computation of the posterior distribution of the treatment effect with either fixed or stochastic expert-elicited weights. Intended use is the planning, analysis and interpretation of extrapolation studies in pediatric drug development, but applicability is generally wider.
 License: Apache License 2.0
 URL: https://github.com/chstock/tipmap
