@@ -13,7 +13,7 @@
 #' chips <- c(0, 2, 3, 2, 1, 1, 1, 0, 0, 0)
 #' x <- get_cum_probs_1exp(chips)
 #' y <- get_model_input_1exp(x)
-#' fit_beta_1exp(df = y)$par
+#' fit_beta_1exp(df = y)["par"]
 #'
 fit_beta_1exp <- function (df)
 {

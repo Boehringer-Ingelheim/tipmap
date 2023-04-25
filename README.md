@@ -132,5 +132,5 @@ get_tipping_points(
 
 To cite `tipmap` in publications please use: Morten Dreher and Christian
 Stock (2022). tipmap: Tipping Point Analysis for Bayesian Dynamic
-Borrowing. R package version 0.3.9. URL:
+Borrowing. R package version 0.4.1. URL:
 <https://CRAN.R-project.org/package=tipmap>
