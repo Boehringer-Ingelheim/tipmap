@@ -1,3 +1,8 @@
+## tipmap 0.4.2
+
+* GitHub repository changed 
+* ...
+
 ## tipmap 0.4.1
 
 * New vignette on weight determination via expert elicitation 
