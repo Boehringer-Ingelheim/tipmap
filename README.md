@@ -34,7 +34,7 @@ You can install the current development version from GitHub with:
 
 ``` r
 if (!require("remotes")) {install.packages("remotes")}
-remotes::install_github("chstock/tipmap")
+remotes::install_github("Boehringer-Ingelheim/tipmap")
 ```
 
 ## Getting started
