@@ -45,7 +45,7 @@ get_tipping_points <-
         ))
       } else if (tp[i] >= 1) {
         message(paste0(
-          "Weight 1 identified for tipping point of quantile ",
+          "Weight >=1 identified for tipping point of quantile ",
           quantile[i]
         ))
       }
