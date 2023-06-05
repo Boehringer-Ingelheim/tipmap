@@ -1,7 +1,7 @@
 ## tipmap 0.4.2
 
 * GitHub repository changed 
-* ...
+* Modified `tipmap_plot()` to avoid issues with tipping points being 0 or 1
 
 ## tipmap 0.4.1
 

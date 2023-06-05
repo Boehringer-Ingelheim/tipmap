@@ -40,7 +40,7 @@ tipmap_plot <-
       stop("`null_effect` must be numeric")
     if (!(is.data.frame(tipmap_data)))
       stop("`tipmap_data` must be a data frame. Use create_tipmap_data()")
-
+    
     if (nrow(dplyr::filter(tipmap_data, x.col == "prior")) == 2) {
       x.labels <-
         c(target_pop_lab,
@@ -53,18 +53,18 @@ tipmap_plot <-
         c(target_pop_lab, seq(from = 0, to = 1, by = .1), map_prior_lab)
       x.breaks <- c(-0.15, seq(from = 0, to = 1, by = .1), 1.15)
     }
-
-
+    
+    
     if ((tipmap_data$t.0.025[tipmap_data$x.at == 1.15] - null_effect) *
         (tipmap_data$t.0.975[tipmap_data$x.at == 1.15] - null_effect) <= 0) {
       message("95% credible interval for MAP prior includes null treatment effect")
     }
-
+    
     if ((tipmap_data$t.0.025[tipmap_data$x.at == -0.15] - null_effect) *
         (tipmap_data$t.0.975[tipmap_data$x.at == -0.15] - null_effect) > 0) {
       message("Treatment effect in target population without borrowing")
     }
-
+    
     # base plot
     tpaPlot <- ggplot2::ggplot(data = tipmap_data,
                                ggplot2::aes(x = x.at, y = t.est,
@@ -143,9 +143,9 @@ tipmap_plot <-
                            linetype = "2.5%/97.5%",
                            colour = "2.5%/97.5%"
                          ))
-
+    
     # for positive treatment effect in MAP prior
-
+    
     if (abs((min(abs(
       unlist(tipmap_data$t.0.025)
     ), na.rm = TRUE) - null_effect)) <
@@ -153,19 +153,19 @@ tipmap_plot <-
       unlist(tipmap_data$t.0.975)
     ), na.rm = TRUE) - null_effect))) {
       tippingPoint.025 <- get_tipping_points(tipmap_data,
-                                          quantile = 0.025,
-                                          null_effect = null_effect)
+                                             quantile = 0.025,
+                                             null_effect = null_effect)
       tippingPoint.05 <- get_tipping_points(tipmap_data,
-                                         quantile = 0.05,
-                                         null_effect = null_effect)
+                                            quantile = 0.05,
+                                            null_effect = null_effect)
       tippingPoint.1 <- get_tipping_points(tipmap_data,
-                                        quantile = 0.1,
-                                        null_effect = null_effect)
+                                           quantile = 0.1,
+                                           null_effect = null_effect)
       tippingPoint.2 <- get_tipping_points(tipmap_data,
-                                        quantile = 0.2,
-                                        null_effect = null_effect)
-
-      if (tippingPoint.025 != 0 & tippingPoint.025 != 1) {
+                                           quantile = 0.2,
+                                           null_effect = null_effect)
+      
+      if (tippingPoint.025 != 0 & tippingPoint.025 != 1 & !(is.na(tippingPoint.025))) {
         tpaPlot <- tpaPlot +
           ggplot2::geom_point(
             data = tipmap_data,
@@ -178,7 +178,7 @@ tipmap_plot <-
             linetype = "dotted"
           )
       }
-      if (tippingPoint.05 != 0 & tippingPoint.05 != 1) {
+      if (tippingPoint.05 != 0 & tippingPoint.05 != 1 & !(is.na(tippingPoint.05))) {
         tpaPlot <- tpaPlot +
           ggplot2::geom_point(
             data = tipmap_data,
@@ -191,7 +191,7 @@ tipmap_plot <-
             linetype = "dotted"
           )
       }
-      if (tippingPoint.1 != 0 & tippingPoint.1 != 1) {
+      if (tippingPoint.1 != 0 & tippingPoint.1 != 1 & !(is.na(tippingPoint.1))) {
         tpaPlot <- tpaPlot +
           ggplot2::geom_point(
             data = tipmap_data,
@@ -204,7 +204,7 @@ tipmap_plot <-
             linetype = "dotted"
           )
       }
-      if (tippingPoint.2 != 0 & tippingPoint.2 != 1) {
+      if (tippingPoint.2 != 0 & tippingPoint.2 != 1 & !(is.na(tippingPoint.2))) {
         tpaPlot <- tpaPlot +
           ggplot2::geom_point(
             data = tipmap_data,
@@ -221,22 +221,22 @@ tipmap_plot <-
     } else {
       tippingPoint.975 <-
         get_tipping_points(tipmap_data,
-                        quantile = 0.975,
-                        null_effect = null_effect)
+                           quantile = 0.975,
+                           null_effect = null_effect)
       tippingPoint.95 <-
         get_tipping_points(tipmap_data,
-                        quantile = 0.95,
-                        null_effect = null_effect)
+                           quantile = 0.95,
+                           null_effect = null_effect)
       tippingPoint.9 <-
         get_tipping_points(tipmap_data,
-                        quantile = 0.9,
-                        null_effect = null_effect)
+                           quantile = 0.9,
+                           null_effect = null_effect)
       tippingPoint.8 <-
         get_tipping_points(tipmap_data,
-                        quantile = 0.8,
-                        null_effect = null_effect)
-
-      if (tippingPoint.975 != 0 & tippingPoint.975 != 1) {
+                           quantile = 0.8,
+                           null_effect = null_effect)
+      
+      if (tippingPoint.975 != 0 & tippingPoint.975 != 1 & !(is.na(tippingPoint.975))) {
         tpaPlot <- tpaPlot +
           ggplot2::geom_point(
             data = tipmap_data,
@@ -250,7 +250,7 @@ tipmap_plot <-
             linetype = "dotted"
           )
       }
-      if (tippingPoint.95 != 0 & tippingPoint.95 != 1) {
+      if (tippingPoint.95 != 0 & tippingPoint.95 != 1 & !(is.na(tippingPoint.95))) {
         tpaPlot <- tpaPlot +
           ggplot2::geom_point(
             data = tipmap_data,
@@ -264,7 +264,7 @@ tipmap_plot <-
             linetype = "dotted"
           )
       }
-      if (tippingPoint.9 != 0 & tippingPoint.9 != 1) {
+      if (tippingPoint.9 != 0 & tippingPoint.9 != 1 & !(is.na(tippingPoint.9))) {
         tpaPlot <- tpaPlot +
           ggplot2::geom_point(
             data = tipmap_data,
@@ -278,7 +278,7 @@ tipmap_plot <-
             linetype = "dotted"
           )
       }
-      if (tippingPoint.8 != 0 & tippingPoint.8 != 1) {
+      if (tippingPoint.8 != 0 & tippingPoint.8 != 1 & !(is.na(tippingPoint.8))) {
         tpaPlot <- tpaPlot +
           ggplot2::geom_point(
             data = tipmap_data,
@@ -323,7 +323,7 @@ tipmap_plot <-
           "20%/80%" = "longdash"
         )
       )
-
+    
     if (!(missing(y_range))) {
       tpaPlot <- tpaPlot +
         ggplot2::coord_cartesian(ylim = y_range)
@@ -332,6 +332,6 @@ tipmap_plot <-
       tpaPlot <- tpaPlot +
         ggplot2::scale_y_continuous(breaks = y_breaks)
     }
-
+    
     return(tpaPlot)
   }
