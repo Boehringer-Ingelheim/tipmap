@@ -45,9 +45,9 @@ At the _analysis stage_, tipping point analyses can be used as a sensitivity ana
 
 This vignette shows an exemplary application of the tipping point analysis with hypothetical data.
 
-Further functions in this package (not illustrated in this vignette) facilitate the specification of a robust MAP prior via expert elicitation, specifically the choice of a primary weight, using the roulette method, as well as the computation of the posterior distribution of the treatment effect with stochastic weights elicited from a panel of experts. 
+Further functions in this package (not illustrated in this vignette) facilitate the specification of a robust MAP prior via expert elicitation, specifically the choice of a primary weight (using the roulette method).
 
-Intended use of the **tipmap**-package is the planning, analysis and interpretation of (small) clinical trials in pediatric drug development, where extrapolation of efficacy, often through Bayesian methods, has become increasingly common (@Gamalo2022; @ICHE11A; @Ionan2023). However, the applicability of the package is generally wider.
+Intended use of the **tipmap**-package is the planning, analysis and interpretation of (small) clinical trials in pediatric drug development, where extrapolation of efficacy, often through Bayesian methods, has become increasingly common (@Gamalo2022; @ICHE11A; @Ionan2023; @Travis2023). However, the applicability of the package is generally wider.
 
 For the implementation of the MAP prior approach, including computation of the posterior distribution, the **RBesT**-package is used (@Weber2021).
 

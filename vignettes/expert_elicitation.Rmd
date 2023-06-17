@@ -209,30 +209,6 @@ fig_betas_2 <- ggplot(
 print(fig_betas_2)
 ```
 
-## Use of a distribution of weights
-
-Instead of mean or median values we may also want to use samples from the pooled distribution of weights to compute the posterior to reflect the uncertainty in the choice of an appropriate weight. This is faciliated in the function `get_stochast_weight_posterior`.
-
-```{r use_w_dist1, eval=T, echo=T}
-map_prior <- load_tipmap_data("tipmapPrior.rds")
-new_trial_dat <- create_new_trial_data(
-  n_total = 30, est = 1.17, se = 0.95
-)
-post_stochast_w <- get_stochast_weight_posterior(
-  map_prior = map_prior,
-  new_trial_dat = new_trial_dat,
-  weights = expert_samples[1:50], # example for 50 samples only
-  n_posterior_samples = 10,
-  sigma = 12
-)
-```
-
-This function computes the posterior for each sampled weight and draws a specified number of samples from each posterior. For example, if 50 weights are supplied and `n_posterior_samples = 10`, then the function returns `r 50 * 10` posterior samples.
-
-```{r use_w_dist2, eval=T, echo=T}
-length(post_stochast_w)
-summary(post_stochast_w)
-```
 
 
 ## References

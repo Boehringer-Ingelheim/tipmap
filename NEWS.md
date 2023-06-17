@@ -1,7 +1,9 @@
 ## tipmap 0.4.2
 
 * GitHub repository changed 
-* Modified `tipmap_plot()` to avoid issues with tipping points being 0 or 1
+* Modified `tipmap_plot()` to avoid problems with tipping points being 0 or 1
+* Function `get_stochast_weight_posterior()` removed
+* Documentation updates
 
 ## tipmap 0.4.1
 
