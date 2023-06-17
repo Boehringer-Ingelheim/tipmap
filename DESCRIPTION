@@ -38,9 +38,5 @@ VignetteBuilder: knitr
 Depends: R (>= 3.5.0)
 NeedsCompilation: no
 Packaged: 2022-12-07 21:22:04 UTC; stockch
-Author: Morten Dreher [aut],
-  Christian Stock [aut, cre] (<https://orcid.org/0000-0002-3493-3234>),
-  Emma Torrini [ctb]
-Maintainer: Christian Stock <christian.stock@boehringer-ingelheim.com>
 Repository: CRAN
 Date/Publication: 2022-12-07 21:50:02 UTC
