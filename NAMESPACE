@@ -1,3 +1,3 @@
 exportPattern("^[[:alpha:]]+")
 importFrom("stats", "approx", "optim", "pbeta", "qnorm")
-
+importFrom("magrittr", "%>%")

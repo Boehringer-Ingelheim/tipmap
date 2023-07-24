@@ -1,3 +1,7 @@
+## tipmap 0.5.1
+
+* Functionality added to compute operating characteristics
+
 ## tipmap 0.4.2
 
 * GitHub repository changed 
