@@ -23,7 +23,7 @@
 
 ## tipmap 0.3.7
 
-* Vignette added
+* Introductory vignette added
 * Modification in Readme file
 
 ## tipmap 0.3.5
