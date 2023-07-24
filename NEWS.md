@@ -1,6 +1,7 @@
 ## tipmap 0.5.1
 
-* Functionality added to compute operating characteristics
+* Functionality added to compute operating characteristics (new functions are: `oc_pos()` and `oc_post_quantiles()`)
+* ...
 
 ## tipmap 0.4.2
 
