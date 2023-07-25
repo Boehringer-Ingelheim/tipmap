@@ -18,7 +18,7 @@ oc_pos(
 \arguments{
 \item{m}{Numerical vector of simulated effect estimates.}
 
-\item{se}{Numerical vector of simulated standard errors.}
+\item{se}{Numerical vector of simulated standard errors (`m` and `se` need to have the same length).}
 
 \item{probs}{Vector of quantiles q, with 1 minus q representing an evidence level of interest (where positive effect estimate indicate a beneficial treatment).}
 
@@ -56,7 +56,4 @@ pos_dat <- oc_pos(
   direction_pos = TRUE
 ) 
 print(pos_dat)
-}
-\seealso{
-[oc_post_quantiles()]
 }
