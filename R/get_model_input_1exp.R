@@ -9,6 +9,8 @@
 #' @return Dataframe that can be used as input to fit beta distributions by
 #' \code{fit_beta_1exp()}.
 #'
+#' @export
+#'
 #' @examples
 #' chips <- c(0,2,3,2,1,1,1,0,0,0)
 #' x <- get_cum_probs_1exp(chips)

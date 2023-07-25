@@ -6,7 +6,7 @@
 #' @param file The dataset to be loaded.
 #'
 #' @return A pre-saved dataset.
-#'
+#' @export
 #' @examples
 #'
 #' load_tipmap_data(file = "tipdat.rds")

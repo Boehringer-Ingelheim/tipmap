@@ -8,7 +8,7 @@
 #' The first column represents weight on interval 0 to 0.1.
 #'
 #' @return A vector of cumulative probabilities.
-#'
+#' @export
 #' @examples
 #' chips <- c(0,2,3,2,1,1,1,0,0,0)
 #' x <- get_cum_probs_1exp(chips)

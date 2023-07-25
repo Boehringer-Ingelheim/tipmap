@@ -8,7 +8,7 @@
 #' @details This function is based on \code{SHELF::fitdist} and yields identical results.
 #'
 #' @return Parameters of beta fit.
-#'
+#' @export
 #' @examples
 #' chips <- c(0, 2, 3, 2, 1, 1, 1, 0, 0, 0)
 #' x <- get_cum_probs_1exp(chips)

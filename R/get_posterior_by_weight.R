@@ -7,6 +7,8 @@
 #' @param weight The weight(s) to be filtered by.
 #'
 #' @return The filtered posterior values
+#' 
+#' @export
 #'
 #' @seealso \code{\link{create_posterior_data}}
 #'

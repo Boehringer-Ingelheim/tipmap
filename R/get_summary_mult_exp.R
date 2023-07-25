@@ -8,7 +8,7 @@
 #' @param weights Weights assigned to each expert. Defaults to equal weights.
 #'
 #' @return A vector containing summary statistics.
-#'
+#' @export
 #' @examples
 #' get_summary_mult_exp(rbind(
 #'   c(0, 0, 0, 0, 2, 3, 3, 2, 0, 0),

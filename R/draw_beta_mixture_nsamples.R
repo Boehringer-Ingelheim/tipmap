@@ -10,7 +10,7 @@
 #' @param weights An optional vector containing the weight assigned to each expert. Defaults to equal weights.
 #'
 #' @return A numeric vector containing samples from a pooled distribution of expert opinions.
-#'
+#' @export
 #' @examples
 #' rweights <- draw_beta_mixture_nsamples(
 #' n = 50,

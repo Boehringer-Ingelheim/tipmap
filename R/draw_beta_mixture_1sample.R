@@ -7,7 +7,7 @@
 #' @param weights Optional vector of weights assigned to experts. Defaults to equal weights.
 #'
 #' @return One draw (numeric value) from a mixture of beta distributions.
-#'
+#' @export
 #' @examples
 #' beta_fits <- fit_beta_mult_exp(
 #' chips_mult =

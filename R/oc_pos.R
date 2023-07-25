@@ -13,7 +13,9 @@
 #' @param direction_pos Logical value, `TRUE` (default) if effects greater that the `null_effect` indicate a beneficial treatment and `FALSE` otherwise.
 #'
 #' @return An array of probabilities, either of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level.
-#'
+#' 
+#' @export
+#' 
 #' @examples
 #' set.seed(123)
 #' n_sims <- 5 # small number for exemplary application

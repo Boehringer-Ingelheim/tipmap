@@ -7,7 +7,7 @@
 #' It should contain one row per expert and 10 columns, one for each bin, representing weights from 0 to 1.
 #'
 #' @return Parameters of the individual beta distributions.
-#'
+#' @export
 #' @examples
 #' beta_fits <- fit_beta_mult_exp(
 #' chips_mult =
