@@ -18,7 +18,7 @@ oc_pos(
 \arguments{
 \item{m}{Numerical vector of simulated effect estimates.}
 
-\item{se}{Numerical vector of simulated standard errors (`m` and `se` need to have the same length).}
+\item{se}{Numerical vector of simulated standard errors (\code{m} and \code{se} need to have the same length).}
 
 \item{probs}{Vector of quantiles q, with 1 minus q representing an evidence level of interest (where positive effect estimate indicate a beneficial treatment).}
 
@@ -26,11 +26,11 @@ oc_pos(
 
 \item{map_prior}{A MAP prior containing information about the trial(s) in the source population, created using \code{RBesT}.}
 
-\item{sigma}{Standard deviation to be used for the weakly informative component of the MAP prior, recommended to be the unit-information standard deviation.}
+\item{sigma}{Standard deviation of the weakly informative component of the MAP prior, recommended to be the unit-information standard deviation.}
 
 \item{null_effect}{Numerical value representing the null effect (defaults to 0).}
 
-\item{direction_pos}{Logical value, `TRUE` (default) if effects greater that the `null_effect` indicate a beneficial treatment and `FALSE` otherwise.}
+\item{direction_pos}{Logical value, \code{TRUE} (default) if effects greater that the \code{null_effect} indicate a beneficial treatment and \code{FALSE} otherwise.}
 }
 \value{
 A 2-dimensional array containing probabilities, either of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level.

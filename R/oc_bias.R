@@ -5,13 +5,13 @@
 #' Assessment of absolute bias in posterior means and medians for a given weight and evidence level, using simulated data as input.
 #'
 #' @param m Numerical vector of simulated effect estimates.
-#' @param se Numerical vector of simulated standard errors (`m` and `se` need to have the same length). 
-#' @param true_effect Numerical value, representing the true treatment effect (usually the mean of the simulated `m`).
+#' @param se Numerical vector of simulated standard errors (\code{m} and \code{se} need to have the same length). 
+#' @param true_effect Numerical value, representing the true treatment effect (usually the mean of the simulated \code{m}).
 #' @param weights Vector of weights of the informative component of the MAP prior.
 #' @param map_prior A MAP prior containing information about the trial(s) in the source population, created using \code{RBesT}.
-#' @param sigma Standard deviation to be used for the weakly informative component of the MAP prior, recommended to be the unit-information standard deviation. 
+#' @param sigma Standard deviation of the weakly informative component of the MAP prior, recommended to be the unit-information standard deviation. 
 #'
-#' @return A 2-dimensional array containing data on bias.
+#' @return A 2-dimensional array containing results on bias.
 #' @export
 #' 
 #' @seealso \code{\link{oc_pos}} and \code{\link{oc_coverage}}

@@ -9,15 +9,15 @@ oc_coverage(m, se, true_effect, weights, map_prior, sigma)
 \arguments{
 \item{m}{Numerical vector of simulated effect estimates.}
 
-\item{se}{Numerical vector of simulated standard errors (`m` and `se` need to have the same length).}
+\item{se}{Numerical vector of simulated standard errors (\code{m} and \code{se} need to have the same length).}
 
-\item{true_effect}{Numerical value, representing the true treatment effect (usually the mean of the simulated `m`).}
+\item{true_effect}{Numerical value, representing the true treatment effect (usually the mean of the simulated \code{m}).}
 
 \item{weights}{Vector of weights of the informative component of the MAP prior.}
 
 \item{map_prior}{A MAP prior containing information about the trial(s) in the source population, created using \code{RBesT}.}
 
-\item{sigma}{Standard deviation to be used for the weakly informative component of the MAP prior, recommended to be the unit-information standard deviation.}
+\item{sigma}{Standard deviation of the weakly informative component of the MAP prior, recommended to be the unit-information standard deviation.}
 }
 \value{
 A 2-dimensional array containing results on coverage.
