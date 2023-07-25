@@ -4,7 +4,7 @@
 #' Calculate the probability of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level.
 #'
 #' @param m Numerical vector of simulated effect estimates.
-#' @param se Numerical vector of simulated standard errors. 
+#' @param se Numerical vector of simulated standard errors (`m` and `se` need to have the same length). 
 #' @param probs Vector of quantiles q, with 1 minus q representing an evidence level of interest (where positive effect estimate indicate a beneficial treatment).
 #' @param weights Vector of weights of the informative component of the MAP prior.
 #' @param map_prior A MAP prior containing information about the trial(s) in the source population, created using \code{RBesT}.
@@ -13,8 +13,6 @@
 #' @param direction_pos Logical value, `TRUE` (default) if effects greater that the `null_effect` indicate a beneficial treatment and `FALSE` otherwise.
 #'
 #' @return An array of probabilities, either of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level.
-#' 
-#' @seealso [oc_post_quantiles()]
 #'
 #' @examples
 #' set.seed(123)
@@ -38,10 +36,57 @@ oc_pos <- function(
     m, se, probs, weights, map_prior, sigma,
     null_effect = 0, direction_pos = TRUE
     ) {
+  # check inputs
+  assert_that(is.numeric(m))
+  assert_that(is.numeric(se))
+  assert_that(length(m) == length(se))
+  assert_that(is.numeric(probs))
+  assert_that(all(probs > 0))
+  assert_that(all(probs < 1))
+  assert_that(is.numeric(weights))
+  assert_that(all(weights >= 0))
+  assert_that(all(weights <= 1))
+  assert_that("normMix" %in% class(map_prior))
+  assert_that(is.numeric(sigma))
+  assert_that(is.scalar(sigma))
+  assert_that(is.numeric(null_effect))
+  assert_that(is.flag(direction_pos))
+  # function to compute posterior quantiles
+  # for one trial
+  oc_post_q <- function(
+    est, se, probs, weights, map_prior, sigma, 
+    null_effect, direction_pos
+  ) {
+    x <- array(dim = c(length(weights), length(probs)))
+    dimnames(x) <- list(paste("w=", weights, sep = ""),
+                        paste("q=", probs, sep = ""))
+    for (i in 1:length(weights)) {
+      w <- weights[i]
+      robust.mix.prior <- RBesT::robustify(
+        prior = map_prior,
+        weight = (1 - w),
+        m = 0,
+        n = 1,
+        sigma = sigma
+      )
+      posterior <- RBesT::postmix(
+        robust.mix.prior,
+        m = est,
+        se = se
+      )
+      ifelse(
+        test = (direction_pos == TRUE), 
+        yes = x[i,] <- RBesT::qmix(posterior, p = probs) > null_effect, 
+        no = x[i,] <- RBesT::qmix(posterior, p = probs) < null_effect
+      )
+    }
+    return(x)
+  }
+  # perform pos calculation 
   results <- purrr::map2(
     .x = m,
     .y = se,
-    .f = ~ oc_post_quantiles(
+    .f = ~ oc_post_q(
       est = .x,
       se = .y,
       probs = probs,
