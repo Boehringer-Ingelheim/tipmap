@@ -1,5 +1,5 @@
 ---
-title: "Determining a weight of the informative prior component"
+title: "Specifying a primary weight of the informative prior component"
 package: tipmap
 author: "Christian Stock"
 date: "`r Sys.Date()`"
