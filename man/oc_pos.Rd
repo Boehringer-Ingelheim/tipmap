@@ -2,7 +2,7 @@
 % Please edit documentation in R/oc_pos.R
 \name{oc_pos}
 \alias{oc_pos}
-\title{Probability of success calculation}
+\title{Assessing probability of success}
 \usage{
 oc_pos(
   m,
@@ -33,10 +33,10 @@ oc_pos(
 \item{direction_pos}{Logical value, `TRUE` (default) if effects greater that the `null_effect` indicate a beneficial treatment and `FALSE` otherwise.}
 }
 \value{
-An array of probabilities, either of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level.
+A 2-dimensional array containing probabilities, either of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level.
 }
 \description{
-Calculate the probability of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level.
+Assessment of the probability of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level, using simulated data as input.
 }
 \examples{
 set.seed(123)
@@ -45,7 +45,7 @@ sim_dat <- list(
   "m" = rnorm(n = n_sims, mean = 1.15, sd = 0.1),
   "se" = rnorm(n = n_sims, mean = 1.8, sd = 0.3)
 )
-pos_dat <- oc_pos(
+results <- oc_pos(
   m = sim_dat[["m"]],
   se = sim_dat[["se"]],
   probs = c(0.025, 0.05, 0.1, 0.2), 
@@ -55,5 +55,8 @@ pos_dat <- oc_pos(
   null_effect = 0,
   direction_pos = TRUE
 ) 
-print(pos_dat)
+print(results)
+}
+\seealso{
+\code{\link{oc_bias}} and \code{\link{oc_coverage}}
 }
