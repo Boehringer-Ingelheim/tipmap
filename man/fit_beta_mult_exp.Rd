@@ -11,10 +11,10 @@ fit_beta_mult_exp(chips_mult)
 It should contain one row per expert and 10 columns, one for each bin, representing weights from 0 to 1.}
 }
 \value{
-Parameters of the individual beta distributions.
+A dataframe containing the parameters of the individual beta distributions.
 }
 \description{
-Fit beta distributions to weights elicited from multiple experts via the roulette method.
+Fit beta distributions to data elicited from multiple experts via the roulette method.
 }
 \examples{
 beta_fits <- fit_beta_mult_exp(
@@ -27,4 +27,7 @@ chips_mult =
   )
 beta_fits
 
+}
+\seealso{
+\code{\link{fit_beta_1exp}}.
 }

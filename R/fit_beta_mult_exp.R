@@ -1,13 +1,18 @@
+#' @title
 #' Fit beta distributions for multiple experts
 #'
 #' @description
-#' Fit beta distributions to weights elicited from multiple experts via the roulette method.
+#' Fit beta distributions to data elicited from multiple experts via the roulette method.
 #'
 #' @param chips_mult A dataframe or matrix containing weights.
 #' It should contain one row per expert and 10 columns, one for each bin, representing weights from 0 to 1.
 #'
-#' @return Parameters of the individual beta distributions.
+#' @return A dataframe containing the parameters of the individual beta distributions.
+#' 
 #' @export
+#' 
+#' @seealso \code{\link{fit_beta_1exp}}.
+#' 
 #' @examples
 #' beta_fits <- fit_beta_mult_exp(
 #' chips_mult =
@@ -23,8 +28,7 @@ fit_beta_mult_exp <- function(chips_mult) {
   chips_mult <- purrr::array_branch(array = chips_mult, margin = 1)
   dat <- purrr::map(
     .x = chips_mult,
-    .f = ~ get_model_input_1exp(cum_probs = get_cum_probs_1exp(.x),
-                                w = 1:10 / 10)
+    .f = ~ get_model_input_1exp(cum_probs = get_cum_probs_1exp(.x))
   )
   alpha <- beta <- value <- convergence <- NULL
   beta_fits <- purrr::map(.x = dat,

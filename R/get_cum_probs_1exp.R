@@ -1,24 +1,25 @@
 #' Get cumulative probabilities from distribution of chips of one expert
 #'
-#' @description
-#' Internal function needed for expert elicitation methods.
+#' @param chips Vector of integers, representing the distribution of chips assigned by one expert, as elicited through the roulette method.
+#' Each element of the vector represents one bin in the grid.
 #'
-#' @param chips A numeric vector representing the distribution of chips of one expert.
-#' The vector must be of length 10 and contents must add up to 10.
-#' The first column represents weight on interval 0 to 0.1.
-#'
-#' @return A vector of cumulative probabilities.
+#' @return A numeric vector with the cumulative distribution of chips.
+#' 
 #' @export
+#' 
+#' @seealso \code{\link{get_model_input_1exp}} and \code{\link{fit_beta_1exp}}.
+#' 
 #' @examples
-#' chips <- c(0,2,3,2,1,1,1,0,0,0)
+#' chips <- c(0, 2, 3, 2, 1, 1, 1, 0, 0, 0)
 #' x <- get_cum_probs_1exp(chips)
-#' x
+#' print(x)
 #'
 get_cum_probs_1exp <- function(chips) {
-  n_chips <- 10
-  if (!is.numeric(chips)) chips <- as.numeric(chips)
-  if (length(chips) < n_chips) stop("Length of vector must be 10.")
-  if (sum(chips) != n_chips) stop("Integer values must add up to 10.")
-  cum_probs <- cumsum(chips / length(chips))
+  # check inputs
+  assert_that(is.numeric(chips))
+  assert_that(all((chips - floor(chips)) == 0))
+  # compute cumprobs
+  sum_chips <- sum(chips)
+  cum_probs <- cumsum(chips / sum_chips)
   return(cum_probs)
 }

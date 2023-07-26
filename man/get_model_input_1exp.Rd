@@ -7,21 +7,24 @@
 get_model_input_1exp(cum_probs, w = NULL)
 }
 \arguments{
-\item{cum_probs}{Cumulative probabilities of weights of one expert.}
+\item{cum_probs}{Numeric vector, containing cumulative probabilities of weights for one expert, as elicited through the roulette method. Each element of the vector represents one bin in the grid.}
 
-\item{w}{Weight of bins.}
+\item{w}{Numeric vector, upper interval limit of bin (defaults to \code{1:length(cum_probs) / length(cum_probs)}).}
 }
 \value{
-Dataframe that can be used as input to fit beta distributions by
-\code{fit_beta_1exp()}.
+Dataframe to be used as input to fit beta distributions by \code{\link{fit_beta_1exp}}.
 }
 \description{
-Internal function needed for expert elicitation methods.
+Transform cumulative probabilities to fit beta distributions
 }
 \examples{
-chips <- c(0,2,3,2,1,1,1,0,0,0)
+chips <- c(0, 2, 3, 2, 1, 1, 1, 0, 0, 0)
 x <- get_cum_probs_1exp(chips)
+print(x)
 y <- get_model_input_1exp(x)
-y
+print(y)
 
+}
+\seealso{
+\code{\link{get_cum_probs_1exp}} and \code{\link{fit_beta_1exp}}.
 }

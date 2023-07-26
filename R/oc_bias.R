@@ -18,7 +18,7 @@
 #'
 #' @examples
 #' set.seed(123)
-#' n_sims <- 10 # small number for exemplary application 
+#' n_sims <- 5 # small number for exemplary application 
 #' sim_dat <- list(
 #'   "m" = rnorm(n = n_sims, mean = 1.15, sd = 0.1),
 #'   "se" = rnorm(n = n_sims, mean = 1.8, sd = 0.3)

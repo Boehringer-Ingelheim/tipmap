@@ -2,33 +2,38 @@
 % Please edit documentation in R/draw_beta_mixture_nsamples.R
 \name{draw_beta_mixture_nsamples}
 \alias{draw_beta_mixture_nsamples}
-\title{Draw n samples from a mixture of beta distributions}
+\title{Draw samples from a mixture of beta distributions}
 \usage{
-draw_beta_mixture_nsamples(n, chips_mult, weights = NULL)
+draw_beta_mixture_nsamples(n, chips_mult, expert_weight = NULL)
 }
 \arguments{
-\item{n}{The number of samples to be drawn.}
+\item{n}{Numeric value, the number of samples to be drawn.}
 
-\item{chips_mult}{A data frame or matrix containing expert weights.
-Rows should represent experts, columns should represent bins / weights.}
+\item{chips_mult}{Numeric matrix, containing expert weighting (distributions of chips). Rows should represent experts, columns should represent bins / weight intervals.}
 
-\item{weights}{An optional vector containing the weight assigned to each expert. Defaults to equal weights.}
+\item{expert_weight}{An optional numeric vector, containing the weight assigned to each expert (defaults to equal weights).}
 }
 \value{
 A numeric vector containing samples from a pooled distribution of expert opinions.
 }
 \description{
-Draws samples from a mixture of beta distributions, representing pooled weights on
-the informative component of a robust MAP prior, as elicited from experts via the roulette method.
+Draws samples from a mixture of beta distributions, representing pooled weights on the informative component of a robust MAP prior, as elicited from experts via the roulette method.
 }
 \examples{
 rweights <- draw_beta_mixture_nsamples(
-n = 50,
-chips_mult = rbind(
-  c(0, 0, 0, 0, 2, 3, 3, 2, 0, 0),
-  c(0, 0, 0, 1, 2, 4, 2, 1, 0, 0),
-  c(0, 0, 0, 2, 2, 2, 2, 2, 0, 0)
-  ))
-rweights
-
+  n = 50,
+  chips_mult = rbind(
+    c(0, 0, 0, 0, 2, 3, 3, 2, 0, 0),
+    c(0, 0, 0, 1, 2, 4, 2, 1, 0, 0),
+    c(0, 0, 0, 2, 2, 2, 2, 2, 0, 0)
+  ),
+  expert_weight = rep(1/3, 3)
+)
+print(rweights)
+\dontrun{
+hist(rweights)
+}
+}
+\seealso{
+\code{\link{fit_beta_mult_exp}} and \code{\link{get_summary_mult_exp}}.
 }

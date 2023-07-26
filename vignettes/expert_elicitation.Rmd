@@ -77,16 +77,16 @@ Data from a single expert:
 For multiple experts the individual steps are handled by the `fit_beta_mult_exp`-function:
 
 ```{r chips_multiple, eval=T, echo=T}
+chips_mult <- rbind(
+  c(1, 3, 4, 2, 0, 0, 0, 0, 0, 0),
+  c(0, 2, 3, 2, 2, 1, 0, 0, 0, 0),
+  c(0, 1, 3, 2, 2, 1, 1, 0, 0, 0),
+  c(1, 3, 3, 2, 1, 0, 0, 0, 0, 0),
+  c(0, 1, 4, 3, 2, 0, 0, 0, 0, 0)
+)
 beta_fits <- fit_beta_mult_exp(
-chips_mult <-
-  rbind(
-      c(1, 3, 4, 2, 0, 0, 0, 0, 0, 0),
-      c(0, 2, 3, 2, 2, 1, 0, 0, 0, 0),
-      c(0, 1, 3, 2, 2, 1, 1, 0, 0, 0),
-      c(1, 3, 3, 2, 1, 0, 0, 0, 0, 0),
-      c(0, 1, 4, 3, 2, 0, 0, 0, 0, 0)
-      )
-  )
+  chips_mult = chips_mult
+)
 beta_fits
 ```
 
@@ -127,7 +127,10 @@ sd(x)
 Summary statistics for data from multiple experts:
 
 ```{r fit_beta_2a, eval=T, echo=T}
-expert_samples <- draw_beta_mixture_nsamples(n=10^3, chips_mult=chips_mult) 
+expert_samples <- draw_beta_mixture_nsamples(
+  n = 10^3, 
+  chips_mult = chips_mult
+) 
 summary(expert_samples)
 ```
 

@@ -7,19 +7,21 @@
 get_cum_probs_1exp(chips)
 }
 \arguments{
-\item{chips}{A numeric vector representing the distribution of chips of one expert.
-The vector must be of length 10 and contents must add up to 10.
-The first column represents weight on interval 0 to 0.1.}
+\item{chips}{Vector of integers, representing the distribution of chips assigned by one expert, as elicited through the roulette method.
+Each element of the vector represents one bin in the grid.}
 }
 \value{
-A vector of cumulative probabilities.
+A numeric vector with the cumulative distribution of chips.
 }
 \description{
-Internal function needed for expert elicitation methods.
+Get cumulative probabilities from distribution of chips of one expert
 }
 \examples{
-chips <- c(0,2,3,2,1,1,1,0,0,0)
+chips <- c(0, 2, 3, 2, 1, 1, 1, 0, 0, 0)
 x <- get_cum_probs_1exp(chips)
-x
+print(x)
 
+}
+\seealso{
+\code{\link{get_model_input_1exp}} and \code{\link{fit_beta_1exp}}.
 }

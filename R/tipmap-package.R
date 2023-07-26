@@ -3,6 +3,7 @@
 
 ## usethis namespace: start
 #' @importFrom assertthat assert_that
+#' @importFrom assertthat is.count
 #' @importFrom assertthat is.flag
 #' @importFrom assertthat is.scalar
 #' @importFrom magrittr %>%

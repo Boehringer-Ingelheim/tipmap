@@ -4,14 +4,14 @@
 \alias{get_summary_mult_exp}
 \title{Summarize expert weights}
 \usage{
-get_summary_mult_exp(chips_mult, n = 500, weights = NULL)
+get_summary_mult_exp(chips_mult, n = 500, expert_weight = NULL)
 }
 \arguments{
-\item{chips_mult}{A data frame or matrix containing expert weights.}
+\item{chips_mult}{Numeric matrix, containing expert weights.}
 
-\item{n}{The number of samples to be drawn to obtain summary statistics. Defaults to 500.}
+\item{n}{Number of samples to be drawn to obtain summary statistics (defaults to 500).}
 
-\item{weights}{Weights assigned to each expert. Defaults to equal weights.}
+\item{expert_weight}{Weights assigned to each expert (defaults to equal weights).}
 }
 \value{
 A vector containing summary statistics.
