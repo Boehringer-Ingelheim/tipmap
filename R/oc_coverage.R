@@ -7,14 +7,16 @@
 #' @param m Numerical vector of simulated effect estimates.
 #' @param se Numerical vector of simulated standard errors (\code{m} and \code{se} need to have the same length). 
 #' @param true_effect Numerical value, representing the true treatment effect (usually the mean of the simulated \code{m}).
-#' @param weights Vector of weights of the informative component of the MAP prior.
-#' @param map_prior A MAP prior containing information about the trial(s) in the source population, created using \code{RBesT}.
+#' @param weights Vector of weights of the informative component of the MAP prior (defaults to \code{seq(0, 1, by = 0.01)}).
+#' @param map_prior A MAP prior containing information about the trials in the source population, created using \code{RBesT}; a mixture of normal distributions is required.
 #' @param sigma Standard deviation of the weakly informative component of the MAP prior, recommended to be the unit-information standard deviation. 
-#'
+#' @param eval_strategy Character variable, representing the evaluation strategy, either "sequential", "multisession", or "multicore" (see documentation of \code{future::plan}, defaults to "sequential").
+#' @param n_cores Integer value, representing the number of cores to be used (defaults to 1); only applies if \code{eval_strategy} is not "sequential".
+#' 
 #' @return A 2-dimensional array containing results on coverage.
 #' @export
 #' 
-#' @seealso \code{\link{oc_pos}} and \code{\link{oc_bias}}
+#' @seealso \code{\link{oc_pos}} and \code{\link{oc_bias}}.
 #'
 #' @examples
 #' set.seed(123)
@@ -33,11 +35,14 @@
 #' ) 
 #' print(results)
 oc_coverage <- function(
-    m, se, true_effect, weights, map_prior, sigma
+    m, se, true_effect, weights = seq(0, 1, by = 0.01),
+    map_prior, sigma,
+    n_cores = 1, eval_strategy = "sequential"
   ) {
   # check inputs
   assert_that(is.numeric(m))
   assert_that(is.numeric(se))
+  assert_that(all(se > 0))
   assert_that(length(m) == length(se))
   assert_that(is.numeric(true_effect))
   assert_that(is.scalar(true_effect))
@@ -47,6 +52,9 @@ oc_coverage <- function(
   assert_that("normMix" %in% class(map_prior))
   assert_that(is.numeric(sigma))
   assert_that(is.scalar(sigma))
+  assert_that(sigma > 0)
+  assert_that(eval_strategy %in% c("sequential", "multisession", "multicore"))
+  assert_that(is.count(n_cores))
   # vector of types of coverage probabilities
   oc_types <- c("cov.50p", "cov.80p", "cov.90p", "cov.95p")
   # vector of probabilities
@@ -85,7 +93,12 @@ oc_coverage <- function(
   return(x)
   }
   # compute bias over a range of (simulated) trial results
-  results <- purrr::map2(
+  ifelse(
+    test = (eval_strategy == "sequential"),
+    yes = future::plan(strategy = eval_strategy), 
+    no = future::plan(strategy = eval_strategy, workers = n_cores)
+  )
+  results <- furrr::future_map2(
     .x = m,
     .y = se,
     .f = ~ assess_one_trial(
@@ -95,9 +108,13 @@ oc_coverage <- function(
       weights = weights,
       map_prior = map_prior,
       sigma = sigma
-      )
+      ),
+    .options = furrr::furrr_options(),
+    .env_globals = parent.frame(),
+    .progress = F
     ) %>%
     simplify2array() %>%
     apply(c(1, 2), mean)
+  if (!(eval_strategy == "sequential")) future::plan(strategy = "sequential")
   return(results)
 }

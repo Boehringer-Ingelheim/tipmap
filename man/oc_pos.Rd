@@ -8,7 +8,7 @@ oc_pos(
   m,
   se,
   probs,
-  weights,
+  weights = seq(0, 1, by = 0.01),
   map_prior,
   sigma,
   null_effect = 0,
@@ -24,9 +24,9 @@ oc_pos(
 
 \item{probs}{Vector of quantiles q, with 1 minus q representing an evidence level of interest (where positive effect estimate indicate a beneficial treatment).}
 
-\item{weights}{Vector of weights of the informative component of the MAP prior.}
+\item{weights}{Vector of weights of the informative component of the MAP prior (defaults to \code{seq(0, 1, by = 0.01)}).}
 
-\item{map_prior}{A MAP prior containing information about the trial(s) in the source population, created using \code{RBesT}.}
+\item{map_prior}{A MAP prior containing information about the trials in the source population, created using \code{RBesT}; a mixture of normal distributions is required.}
 
 \item{sigma}{Standard deviation of the weakly informative component of the MAP prior, recommended to be the unit-information standard deviation.}
 
@@ -34,7 +34,7 @@ oc_pos(
 
 \item{direction_pos}{Logical value, \code{TRUE} (default) if effects greater that the \code{null_effect} indicate a beneficial treatment and \code{FALSE} otherwise.}
 
-\item{n_cores}{Integer value, representing the number of cores to be used (defaults to 1 and only applies if \code{eval_strategy} is not "sequential").}
+\item{n_cores}{Integer value, representing the number of cores to be used (defaults to 1); only applies if \code{eval_strategy} is not "sequential".}
 
 \item{eval_strategy}{Character variable, representing the evaluation strategy, either "sequential", "multisession", or "multicore" (see documentation of \code{future::plan}, defaults to "sequential").}
 }
@@ -66,5 +66,5 @@ results <- oc_pos(
 print(results)
 }
 \seealso{
-\code{\link{oc_bias}} and \code{\link{oc_coverage}}
+\code{\link{oc_bias}} and \code{\link{oc_coverage}}.
 }
