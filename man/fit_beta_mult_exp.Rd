@@ -18,14 +18,13 @@ Fit beta distributions to data elicited from multiple experts via the roulette m
 }
 \examples{
 beta_fits <- fit_beta_mult_exp(
-chips_mult =
-  rbind(
-      c(0, 0, 0, 0, 2, 3, 3, 2, 0, 0),
-      c(0, 0, 0, 1, 2, 4, 2, 1, 0, 0),
-      c(0, 0, 0, 2, 2, 2, 2, 2, 0, 0)
-      )
+  chips_mult = rbind(
+    c(0, 0, 0, 0, 2, 3, 3, 2, 0, 0),
+    c(0, 0, 0, 1, 2, 4, 2, 1, 0, 0),
+    c(0, 0, 0, 2, 2, 2, 2, 2, 0, 0)
   )
-beta_fits
+)
+print(beta_fits)
 
 }
 \seealso{
