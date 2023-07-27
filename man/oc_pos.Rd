@@ -12,7 +12,9 @@ oc_pos(
   map_prior,
   sigma,
   null_effect = 0,
-  direction_pos = TRUE
+  direction_pos = T,
+  n_cores = 1,
+  eval_strategy = "sequential"
 )
 }
 \arguments{
@@ -28,9 +30,13 @@ oc_pos(
 
 \item{sigma}{Standard deviation of the weakly informative component of the MAP prior, recommended to be the unit-information standard deviation.}
 
-\item{null_effect}{Numerical value representing the null effect (defaults to 0).}
+\item{null_effect}{Numerical value, representing the null effect (defaults to 0).}
 
 \item{direction_pos}{Logical value, \code{TRUE} (default) if effects greater that the \code{null_effect} indicate a beneficial treatment and \code{FALSE} otherwise.}
+
+\item{n_cores}{Integer value, representing the number of cores to be used (defaults to 1 and only applies if \code{eval_strategy} is not "sequential").}
+
+\item{eval_strategy}{Character variable, representing the evaluation strategy, either "sequential", "multisession", or "multicore" (see documentation of \code{future::plan}, defaults to "sequential").}
 }
 \value{
 A 2-dimensional array containing probabilities, either of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level.
@@ -53,7 +59,9 @@ results <- oc_pos(
   map_prior = load_tipmap_data("tipmapPrior.rds"), 
   sigma = 16.23,
   null_effect = 0,
-  direction_pos = TRUE
+  direction_pos = TRUE, 
+  eval_strategy = "sequential",
+  n_cores = 1
 ) 
 print(results)
 }
