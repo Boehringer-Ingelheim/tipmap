@@ -10,9 +10,11 @@
 #' @param weights Vector of weights of the informative component of the MAP prior.
 #' @param map_prior A MAP prior containing information about the trial(s) in the source population, created using \code{RBesT}.
 #' @param sigma Standard deviation of the weakly informative component of the MAP prior, recommended to be the unit-information standard deviation. 
-#' @param null_effect Numerical value representing the null effect (defaults to 0).
+#' @param null_effect Numerical value, representing the null effect (defaults to 0).
 #' @param direction_pos Logical value, \code{TRUE} (default) if effects greater that the \code{null_effect} indicate a beneficial treatment and \code{FALSE} otherwise.
-#'
+#' @param eval_strategy Character variable, representing the evaluation strategy, either "sequential", "multisession", or "multicore" (see documentation of \code{future::plan}, defaults to "sequential").
+#' @param n_cores Integer value, representing the number of cores to be used (defaults to 1 and only applies if \code{eval_strategy} is not "sequential").
+#' 
 #' @return A 2-dimensional array containing probabilities, either of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level.
 #' 
 #' @export
@@ -34,12 +36,15 @@
 #'   map_prior = load_tipmap_data("tipmapPrior.rds"), 
 #'   sigma = 16.23,
 #'   null_effect = 0,
-#'   direction_pos = TRUE
+#'   direction_pos = TRUE, 
+#'   eval_strategy = "sequential",
+#'   n_cores = 1
 #' ) 
 #' print(results)
 oc_pos <- function(
     m, se, probs, weights, map_prior, sigma,
-    null_effect = 0, direction_pos = TRUE
+    null_effect = 0, direction_pos = T,
+    n_cores = 1, eval_strategy = "sequential"
     ) {
   # check inputs
   assert_that(is.numeric(m))
@@ -56,6 +61,8 @@ oc_pos <- function(
   assert_that(is.scalar(sigma))
   assert_that(is.numeric(null_effect))
   assert_that(is.flag(direction_pos))
+  assert_that(eval_strategy %in% c("sequential", "multisession", "multicore"))
+  assert_that(is.count(n_cores))
   # function to compute posterior quantiles
   # for one trial
   oc_post_q <- function(
@@ -80,7 +87,7 @@ oc_pos <- function(
         se = se
       )
       ifelse(
-        test = (direction_pos == TRUE), 
+        test = (direction_pos == T), 
         yes = x[i,] <- RBesT::qmix(posterior, p = probs) > null_effect, 
         no = x[i,] <- RBesT::qmix(posterior, p = probs) < null_effect
       )
@@ -88,7 +95,12 @@ oc_pos <- function(
     return(x)
   }
   # perform pos calculation 
-  results <- purrr::map2(
+  ifelse(
+    test = (eval_strategy == "sequential"),
+    yes = future::plan(strategy = eval_strategy), 
+    no = future::plan(strategy = eval_strategy, workers = n_cores)
+  )
+  results <- furrr::future_map2(
     .x = m,
     .y = se,
     .f = ~ oc_post_q(
@@ -100,8 +112,13 @@ oc_pos <- function(
       sigma = sigma,
       null_effect = null_effect,
       direction_pos = direction_pos
-      )
+      ),
+    .options = furrr::furrr_options(),
+    .env_globals = parent.frame(),
+    .progress = F
     ) %>%
     simplify2array() %>%
     apply(c(1, 2), mean)
+  if (!(eval_strategy == "sequential")) future::plan(strategy = "sequential")
+  return(results)
 }
