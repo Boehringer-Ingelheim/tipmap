@@ -46,6 +46,4 @@ RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Depends: R (>= 3.5.0)
 NeedsCompilation: no
-Packaged: 2022-12-07 21:22:04 UTC; stockch
 Repository: CRAN
-Date/Publication: 2022-12-07 21:50:02 UTC
