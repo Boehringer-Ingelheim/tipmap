@@ -11,12 +11,13 @@
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tipmap)](https://cran.r-project.org/package=tipmap)
 <!-- badges: end -->
 
-The `tipmap` package aims to facilitate the planning and analysis of
-partial extrapolation studies in pediatric drug development. It provides
-an implementation of a Bayesian tipping point approach based on robust
-meta-analytic predictive (MAP) priors, with further functions
-facilitating expert elicitation of a primary weight of the informative
-component of the prior.
+The `tipmap`-package facilitates the planning and analysis of partial
+extrapolation studies in pediatric drug development. It provides an
+implementation of a Bayesian tipping point approach that can be used in
+analyses based on robust meta-analytic predictive (MAP) priors. Further
+functions facilitate expert elicitation of a primary (pre-specified)
+weight of the informative component of the MAP prior and the computation
+of operating characteristics.
 
 ## Installation
 
@@ -53,7 +54,6 @@ prior_data <- create_prior_data(
   est = c(1.23, 1.40, 1.51),
   se = c(0.4, 0.36, 0.31)
 )
-print(prior_data)
 ```
 
 The data from the new trial (collected in the target population):
@@ -64,7 +64,6 @@ ped_trial <- create_new_trial_data(
   est = 1.27, 
   se = 0.95
 )
-print(ped_trial)
 ```
 
 Derivation of the meta-analytic predictive (MAP) prior:
@@ -84,27 +83,25 @@ g_map <-
 ```
 
 ``` r
-map_prior <-
-  RBesT::automixfit(
-    sample = g_map,
-    Nc = seq(1, 4),
-    k = 6,
-    thresh = -Inf
-  )
-print(map_prior)
+map_prior <- RBesT::automixfit(
+  sample = g_map,
+  Nc = seq(1, 4),
+  k = 6,
+  thresh = -Inf
+)
 ```
 
-Computing the posterior distribution:
+Computing the posterior distribution for weights of the informative
+component of the MAP prior ranging from 0 to 1:
 
 ``` r
 posterior <- create_posterior_data(
   map_prior = map_prior,
   new_trial_data = ped_trial,
   sigma = uisd)
-print(posterior)
 ```
 
-Create data for a tipping point analysis (tipping point plot):
+Creating data for a tipping point analysis (tipping point plot):
 
 ``` r
 tipmap_data <- create_tipmap_data(
