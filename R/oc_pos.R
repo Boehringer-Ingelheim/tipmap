@@ -2,7 +2,7 @@
 #' Assessing probability of success 
 #' 
 #' @description
-#' Assessment of the probability of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level, using simulated data as input.
+#' Assessment of the probability of truly or falsely (depending on simulated scenario) rejecting the null hypothesis of interest for a given weight and evidence level, using simulated data as input.
 #'
 #' @param m Numerical vector of simulated effect estimates.
 #' @param se Numerical vector of simulated standard errors (\code{m} and \code{se} need to have the same length). 
