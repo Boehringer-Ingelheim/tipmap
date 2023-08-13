@@ -42,7 +42,7 @@ oc_pos(
 A 2-dimensional array containing probabilities, either of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level.
 }
 \description{
-Assessment of the probability of truly (probability of success) or falsely rejecting the null hypothesis of interest for a given weight and evidence level, using simulated data as input.
+Assessment of the probability of truly or falsely (depending on simulated scenario) rejecting the null hypothesis of interest for a given weight and evidence level, using simulated data as input.
 }
 \examples{
 set.seed(123)
