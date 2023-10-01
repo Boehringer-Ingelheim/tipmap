@@ -12,3 +12,4 @@ test_that("Draw samples from beta mixture works", {
       0.28172, 0.51621, 0.72015, 0.27481, 0.50843)
   )
 })
+

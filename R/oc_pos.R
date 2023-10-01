@@ -4,7 +4,7 @@
 #' @description
 #' Assessment of the probability of truly or falsely (depending on simulated scenario) rejecting the null hypothesis of interest for a given weight and evidence level, using simulated data as input.
 #'
-#' @param m Numerical vector of simulated effect estimates.
+#' @param m Numerical vector of simulated effect estimates. 
 #' @param se Numerical vector of simulated standard errors (\code{m} and \code{se} need to have the same length). 
 #' @param probs Vector of quantiles q, with 1 minus q representing an evidence level of interest (where positive effect estimate indicate a beneficial treatment).
 #' @param weights Vector of weights of the informative component of the MAP prior (defaults to \code{seq(0, 1, by = 0.01)}).

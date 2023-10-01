@@ -1,3 +1,7 @@
+## tipmap 0.5.2
+
+* Fix to comply with CRAN requirements
+
 ## tipmap 0.5.1
 
 * Functionality added to compute operating characteristics (new functions are: `oc_pos()`, `oc_bias()` and `oc_coverage()`)

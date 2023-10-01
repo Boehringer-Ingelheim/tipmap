@@ -19,8 +19,6 @@
 get_model_input_1exp <- function(cum_probs, w = NULL) {
   # check inputs
   assert_that(is.numeric(cum_probs))
-  assert_that(all(cum_probs >= 0))
-  assert_that(all(cum_probs <= 1))
   assert_that(all(cum_probs == cummax(cum_probs)))
   # create dataframe
   w <- 1:length(cum_probs) / length(cum_probs)

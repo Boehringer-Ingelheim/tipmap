@@ -25,11 +25,7 @@ fit_beta_1exp <- function (df) {
   assert_that(is.data.frame(df))
   assert_that(all(names(df) == c("w", "cum_probs")))
   assert_that(is.numeric(df$w))
-  assert_that(all(df$w > 0))
-  assert_that(all(df$w < 1))
   assert_that(is.numeric(df$cum_probs))
-  assert_that(all(df$cum_probs >= 0))
-  assert_that(all(df$cum_probs <= 1))
   # beta fit function
   w <- df$w
   cum_probs <- df$cum_probs
