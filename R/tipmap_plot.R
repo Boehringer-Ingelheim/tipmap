@@ -31,7 +31,7 @@ tipmap_plot <-
            y_breaks = NULL,
            title = NULL,
            y_lab = "Mean difference",
-           x_lab = "Weight on informative component of MAP prior",
+           x_lab = "Weight on informative component of robust MAP prior",
            map_prior_lab = "MAP\nprior",
            meta_analysis_lab = "MA",
            legend_title = "Posterior quantile",
