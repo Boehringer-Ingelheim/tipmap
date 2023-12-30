@@ -1,3 +1,7 @@
+## tipmap 0.5.3
+
+* Adding option for highest posterior density intervals in `create_posterior_data()`.
+
 ## tipmap 0.5.2
 
 * Fix to comply with CRAN requirements
