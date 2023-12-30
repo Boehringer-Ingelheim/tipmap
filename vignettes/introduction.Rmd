@@ -209,7 +209,10 @@ tipmap_data <- create_tipmap_data(
 (p1 <- tipmap_plot(tipmap_data = tipmap_data))
 ```
 
-In the center of the plot, a funnel-shaped display of quantiles of the posterior distribution (reflecting one-sided evidence-levels) is shown for given weights of the informative component of the MAP prior. The intersections between the lines connecting the respective quantiles and the horizontal line at 0 (the null effect) are referred to as tipping points (indicated by vertical lines in red color). They indictae the minimum weight that is required to conclude that the treatment is efficacious for a given one-sided evidence level (@Best2021).
+At the center of the plot, quantiles of the posterior distribution are shown, defining
+credible intervals of the effect estimate and also one-sided evidence-levels for given weights 
+of the informative component of the MAP prior. 
+The intersections between the lines connecting the respective quantiles and the horizontal line at 0 (the null effect) are referred to as tipping points (indicated by vertical lines in red color). They indictae the minimum weight that is required to conclude that the treatment is efficacious for a given one-sided evidence level (@Best2021).
 On the left and right side of the plot, the treatment effect estimate obtained in the trial in the (pediatric) target population (with 95% confidence interval) and the MAP prior (with 95% credible interval) are shown, respectively.
 
 The plot is a `ggplot`-object that can be modified accordingly.

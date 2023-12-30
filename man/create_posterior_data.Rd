@@ -2,25 +2,51 @@
 % Please edit documentation in R/create_posterior_data.R
 \name{create_posterior_data}
 \alias{create_posterior_data}
-\title{Creates posterior distributions for a range of weights on the informative component of the robust MAP prior}
+\title{Quantiles of posterior distributions for a range of weights on the 
+informative component of the robust MAP prior}
 \usage{
-create_posterior_data(map_prior, new_trial_data, sigma, null_effect = 0)
+create_posterior_data(
+  map_prior,
+  new_trial_data,
+  sigma,
+  null_effect = 0,
+  interval_type = "equal-tailed",
+  n_samples = 10000
+)
 }
 \arguments{
-\item{map_prior}{A MAP prior containing information about the trial(s) in the source population, created using \code{RBesT}.}
+\item{map_prior}{A MAP prior containing information about the trial(s) in 
+the source population, created using \code{RBesT}.}
 
-\item{new_trial_data}{A vector containing information about the new trial. See \code{create_new_trial_data()}.}
+\item{new_trial_data}{A vector containing information about the new trial. 
+See \code{create_new_trial_data()}.}
 
-\item{sigma}{Standard deviation to be used for the weakly informative component of the MAP prior, recommended to be the unit-information standard deviation.}
+\item{sigma}{Standard deviation to be used for the weakly informative 
+component of the MAP prior, recommended to be the unit-information standard 
+deviation.}
 
-\item{null_effect}{The mean of the robust component of the MAP prior. Defaults to 0.}
+\item{null_effect}{The mean of the robust component of the MAP prior. 
+Defaults to 0.}
+
+\item{interval_type}{The type of credible interval (character of length 1), 
+either `equal-tailed` (default) or `hpdi`, the highest posterior density 
+interval.}
+
+\item{n_samples}{Number of samples to compute highest posterior density 
+intervals (hence, only applicable if the `interval_type` is `hpdi`).}
 }
 \value{
-A data frame containing posterior distributions for varying weights
+A data frame containing the default quantiles of posterior mixture 
+distributions or bounds of highest posterior density intervals.
 }
 \description{
-Returns a data frame containing the default quantiles of posterior mixture distributions
-generated with varying weights on the informative component of the MAP prior.
+Returns a data frame containing the default quantiles of posterior mixture 
+distributions or bounds of highest posterior density intervals,
+generated with varying weights on the informative component of the MAP 
+prior.
+}
+\details{
+Highest posterior density intervals are based on `coda::HPDinterval()`.
 }
 \examples{
 
@@ -34,14 +60,26 @@ new_trial_data <- create_new_trial_data(
 # read MAP prior created by RBesT
 map_prior <- load_tipmap_data("tipmapPrior.rds")
 
-# create posterior data
-\dontrun{
-posterior_data <- create_posterior_data(
+# create posterior data - with interval_type = equal_tailed
+# (the default for tipping point plots)
+posterior_data1 <- create_posterior_data(
   map_prior = map_prior,
   new_trial_data = new_trial_data,
-  sigma = 12
+  sigma = 12,
+  interval_type = "equal-tailed"   
+)
+
+\donttest{
+# create posterior data - with interval_type = hpdi
+posterior_data2 <- create_posterior_data(
+  map_prior = map_prior,
+  new_trial_data = new_trial_data,
+  sigma = 12,
+  interval_type = "hpdi",
+  n_samples = 1e4
 )
 }
+
 }
 \references{
 Best, N., Price, R. G., Pouliquen, I. J., & Keene, O. N. (2021).
@@ -50,5 +88,5 @@ using Bayesian dynamic borrowing. Pharm Stat, 20(3), 551–562.
 https://doi.org/10.1002/pst.2093
 }
 \seealso{
-\code{\link{create_new_trial_data}}, \code{\link{create_prior_data}}
+[create_new_trial_data()] and [create_prior_data()]
 }
