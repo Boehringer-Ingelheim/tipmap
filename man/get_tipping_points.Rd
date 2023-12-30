@@ -26,5 +26,5 @@ get_tipping_points(tip_dat, quantile = c(0.025, 0.05, 0.1, 0.2), null_effect = 0
 
 }
 \seealso{
-\code{\link{create_tipmap_data}}
+[create_tipmap_data()].
 }

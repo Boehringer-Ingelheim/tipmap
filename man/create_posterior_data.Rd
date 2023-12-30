@@ -46,7 +46,8 @@ generated with varying weights on the informative component of the MAP
 prior.
 }
 \details{
-Highest posterior density intervals are based on `coda::HPDinterval()`.
+Highest posterior density intervals are based on `coda::HPDinterval()` and
+are an experimental feature.
 }
 \examples{
 

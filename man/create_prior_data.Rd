@@ -29,5 +29,5 @@ prior_data <- create_prior_data(
 )
 }
 \seealso{
-\code{\link{create_new_trial_data}}, \code{\link{create_posterior_data}}
+[create_new_trial_data()] and [create_posterior_data()].
 }

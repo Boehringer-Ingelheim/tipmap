@@ -7,7 +7,7 @@
 #' 
 #' @export
 #' 
-#' @seealso \code{\link{get_model_input_1exp}} and \code{\link{fit_beta_1exp}}.
+#' @seealso [get_model_input_1exp()] and [fit_beta_1exp()].
 #' 
 #' @examples
 #' chips <- c(0, 2, 3, 2, 1, 1, 1, 0, 0, 0)

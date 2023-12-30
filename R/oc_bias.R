@@ -16,7 +16,7 @@
 #' @return A 2-dimensional array containing results on bias.
 #' @export
 #' 
-#' @seealso \code{\link{oc_pos}} and \code{\link{oc_coverage}}.
+#' @seealso [oc_pos()] and [oc_coverage()].
 #'
 #' @examples
 #' set.seed(123)

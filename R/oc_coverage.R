@@ -16,7 +16,7 @@
 #' @return A 2-dimensional array containing results on coverage.
 #' @export
 #' 
-#' @seealso \code{\link{oc_pos}} and \code{\link{oc_bias}}.
+#' @seealso [oc_pos()] and [oc_bias()].
 #'
 #' @examples
 #' set.seed(123)

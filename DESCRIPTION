@@ -1,50 +1,47 @@
-Package: tipmap
 Type: Package
+Package: tipmap
 Title: Tipping Point Analysis for Bayesian Dynamic Borrowing
 Version: 0.5.3
 Authors@R: c(
-  person(
-    given = "Christian",
-    family = "Stock",
-    role = c("aut", "cre"),
-    email = "christian.stock@boehringer-ingelheim.com",
-    comment = c(ORCID = "0000-0002-3493-3234")
-    ),
-  person(
-    given = "Morten",
-    family = "Dreher",
-    role = c("aut")
-    ),
-  person(
-    given = "Emma",
-    family = "Torrini",
-    role = c("ctb")
-    ),  
-  person(
-    family = "Boehringer Ingelheim Pharma GmbH & Co. KG",
-    role = c("cph", "fnd")
-    )
+    person("Christian", "Stock", , "christian.stock@boehringer-ingelheim.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-3493-3234")),
+    person("Morten", "Dreher", role = "aut"),
+    person("Emma", "Torrini", role = "ctb"),
+    person(, "Boehringer Ingelheim Pharma GmbH & Co. KG", role = c("cph", "fnd"))
   )
-Description: Tipping point analysis for clinical trials that employ Bayesian dynamic borrowing via robust meta-analytic predictive (MAP) priors. Further functions facilitate expert elicitation of a primary weight of the informative component of the robust MAP prior and computation of operating characteristics. Intended use is the planning, analysis and interpretation of extrapolation studies in pediatric drug development, but applicability is generally wider.
+Description: Tipping point analysis for clinical trials that employ
+    Bayesian dynamic borrowing via robust meta-analytic predictive (MAP)
+    priors. Further functions facilitate expert elicitation of a primary
+    weight of the informative component of the robust MAP prior and
+    computation of operating characteristics. Intended use is the
+    planning, analysis and interpretation of extrapolation studies in
+    pediatric drug development, but applicability is generally wider.
 License: Apache License 2.0
 URL: https://github.com/Boehringer-Ingelheim/tipmap
 BugReports: https://github.com/Boehringer-Ingelheim/tipmap/issues
-Encoding: UTF-8
+Depends: 
+    R (>= 3.5.0)
 Imports: 
-    dplyr,
-    magrittr,
-    purrr,
-    ggplot2,
-    RBesT,
     assertthat,
-    stats,
+    coda,
+    dplyr,
     furrr,
     future,
-    coda
-Suggests: knitr, rmarkdown, tidyr, tibble, testthat (>= 3.0.0),
+    ggplot2,
+    magrittr,
+    purrr,
+    RBesT,
+    stats
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    tibble,
+    tidyr
+VignetteBuilder: 
+    knitr
 Config/testthat/edition: 3
-RoxygenNote: 7.2.3
-VignetteBuilder: knitr
-Depends: R (>= 3.5.0)
+Encoding: UTF-8
 NeedsCompilation: no
 Repository: CRAN
+RoxygenNote: 7.2.3

@@ -12,7 +12,7 @@ get_model_input_1exp(cum_probs, w = NULL)
 \item{w}{Numeric vector, upper interval limit of bin (defaults to \code{1:length(cum_probs) / length(cum_probs)}).}
 }
 \value{
-Dataframe to be used as input to fit beta distributions by \code{\link{fit_beta_1exp}}.
+Dataframe to be used as input to fit beta distributions by [fit_beta_1exp()].
 }
 \description{
 Transform cumulative probabilities to fit beta distributions
@@ -26,5 +26,5 @@ print(y)
 
 }
 \seealso{
-\code{\link{get_cum_probs_1exp}} and \code{\link{fit_beta_1exp}}.
+[get_cum_probs_1exp()] and [fit_beta_1exp()].
 }

@@ -3,11 +3,11 @@
 #' @param cum_probs Numeric vector, containing cumulative probabilities of weights for one expert, as elicited through the roulette method. Each element of the vector represents one bin in the grid.
 #' @param w Numeric vector, upper interval limit of bin (defaults to \code{1:length(cum_probs) / length(cum_probs)}).
 #'
-#' @return Dataframe to be used as input to fit beta distributions by \code{\link{fit_beta_1exp}}.
+#' @return Dataframe to be used as input to fit beta distributions by [fit_beta_1exp()].
 #'
 #' @export
 #' 
-#' @seealso \code{\link{get_cum_probs_1exp}} and \code{\link{fit_beta_1exp}}.
+#' @seealso [get_cum_probs_1exp()] and [fit_beta_1exp()].
 #'
 #' @examples
 #' chips <- c(0, 2, 3, 2, 1, 1, 1, 0, 0, 0)

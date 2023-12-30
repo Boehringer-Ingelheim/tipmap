@@ -8,7 +8,7 @@
 #'
 #' @return A numeric vector with data on the new trial, incl. quantiles of an assumed normal data likelihood.
 #' @export
-#' @seealso \code{\link{create_posterior_data}}, \code{\link{create_tipmap_data}}
+#' @seealso [create_posterior_data()]  and [create_tipmap_data()].
 #' @examples
 #' new_trial_data <- create_new_trial_data(
 #'   n_total = 30, est = 1.27, se = 0.95

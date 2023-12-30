@@ -9,7 +9,7 @@
 #'
 #' @return A data frame containing data on the trials in the source population.
 #' @export
-#' @seealso \code{\link{create_new_trial_data}}, \code{\link{create_posterior_data}}
+#' @seealso [create_new_trial_data()] and [create_posterior_data()].
 #' @examples
 #' prior_data <- create_prior_data(
 #'   n_total = c(160, 240, 320),

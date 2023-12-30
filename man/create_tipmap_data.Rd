@@ -42,5 +42,6 @@ tip_dat <- create_tipmap_data(
 
 }
 \seealso{
-\code{\link{create_new_trial_data}}, \code{\link{create_posterior_data}}, \code{\link{tipmap_plot}}, \code{\link{get_tipping_points}}
+[create_new_trial_data()], [create_posterior_data()], 
+[tipmap_plot()] and [get_tipping_points()].
 }

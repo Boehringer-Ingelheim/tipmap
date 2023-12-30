@@ -7,7 +7,7 @@
 get_posterior_by_weight(posterior, weight)
 }
 \arguments{
-\item{posterior}{The posterior data to be filtered (see \code{create_posterior_data()}).}
+\item{posterior}{The posterior data to be filtered (see [create_posterior_data()]).}
 
 \item{weight}{The weight(s) to be filtered by.}
 }
@@ -25,5 +25,5 @@ get_posterior_by_weight(
 
 }
 \seealso{
-\code{\link{create_posterior_data}}
+[create_posterior_data()].
 }

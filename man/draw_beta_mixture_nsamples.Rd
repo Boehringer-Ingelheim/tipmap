@@ -35,5 +35,5 @@ hist(rweights)
 }
 }
 \seealso{
-\code{\link{fit_beta_mult_exp}} and \code{\link{get_summary_mult_exp}}.
+[fit_beta_mult_exp()] and [get_summary_mult_exp()].
 }

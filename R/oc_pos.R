@@ -19,7 +19,7 @@
 #' 
 #' @export
 #' 
-#' @seealso \code{\link{oc_bias}} and \code{\link{oc_coverage}}.
+#' @seealso [oc_bias()] and [oc_coverage()].
 #' 
 #' @examples
 #' set.seed(123)

@@ -26,5 +26,5 @@ new_trial_data <- create_new_trial_data(
 
 }
 \seealso{
-\code{\link{create_posterior_data}}, \code{\link{create_tipmap_data}}
+[create_posterior_data()]  and [create_tipmap_data()].
 }

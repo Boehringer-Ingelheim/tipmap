@@ -11,7 +11,7 @@
 #' 
 #' @export
 #' 
-#' @seealso \code{\link{fit_beta_1exp}}.
+#' @seealso [fit_beta_1exp()].
 #' 
 #' @examples
 #' beta_fits <- fit_beta_mult_exp(

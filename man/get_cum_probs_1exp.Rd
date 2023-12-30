@@ -23,5 +23,5 @@ print(x)
 
 }
 \seealso{
-\code{\link{get_model_input_1exp}} and \code{\link{fit_beta_1exp}}.
+[get_model_input_1exp()] and [fit_beta_1exp()].
 }

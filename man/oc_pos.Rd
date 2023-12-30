@@ -66,5 +66,5 @@ results <- oc_pos(
 print(results)
 }
 \seealso{
-\code{\link{oc_bias}} and \code{\link{oc_coverage}}.
+[oc_bias()] and [oc_coverage()].
 }

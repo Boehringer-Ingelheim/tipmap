@@ -26,7 +26,8 @@
 #' distributions or bounds of highest posterior density intervals.
 #' 
 #' @details
-#' Highest posterior density intervals are based on `coda::HPDinterval()`.
+#' Highest posterior density intervals are based on `coda::HPDinterval()` and
+#' are an experimental feature.
 #' 
 #' @export
 #' 
@@ -77,10 +78,13 @@ create_posterior_data <-
            interval_type = "equal-tailed",
            n_samples = 1e4
   ) {
+    
+    # Check arguments
     if (!(is.numeric(sigma))) stop("sigma must be numeric")
     if ((sigma <= 0)) stop("sigma must be positive")
     assert_that(interval_type %in% c("equal-tailed", "hpdi"))
     
+    # Setting up array to store results
     arr <- array(dim = c(length(default_weights), length(default_quantiles)))
     dimnames(arr) <- list(paste0("w=", default_weights),
                           paste0("q", default_quantiles))

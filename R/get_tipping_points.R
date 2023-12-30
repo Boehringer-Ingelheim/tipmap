@@ -9,7 +9,9 @@
 #'
 #' @return The weight closest to the tipping point for the specified quantile
 #' @export
-#' @seealso \code{\link{create_tipmap_data}}
+#' 
+#' @seealso [create_tipmap_data()].
+#' 
 #' @examples
 #' tip_dat <- load_tipmap_data("tipdat.rds")#'
 #' get_tipping_points(tip_dat, quantile = 0.025)

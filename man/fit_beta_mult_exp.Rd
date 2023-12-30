@@ -28,5 +28,5 @@ print(beta_fits)
 
 }
 \seealso{
-\code{\link{fit_beta_1exp}}.
+[fit_beta_1exp()].
 }

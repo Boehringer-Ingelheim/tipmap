@@ -3,14 +3,14 @@
 #' @description
 #' Returns quantiles of the posterior distribution of the treatment effect for one or more specified weights.
 #'
-#' @param posterior The posterior data to be filtered (see \code{create_posterior_data()}).
+#' @param posterior The posterior data to be filtered (see [create_posterior_data()]).
 #' @param weight The weight(s) to be filtered by.
 #'
 #' @return The filtered posterior values
 #' 
 #' @export
 #'
-#' @seealso \code{\link{create_posterior_data}}
+#' @seealso [create_posterior_data()].
 #'
 #' @examples
 #' get_posterior_by_weight(

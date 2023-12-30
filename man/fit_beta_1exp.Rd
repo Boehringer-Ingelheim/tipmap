@@ -26,5 +26,5 @@ fit_beta_1exp(df = y)["par"]
 
 }
 \seealso{
-\code{\link{get_model_input_1exp}} and \code{\link{fit_beta_mult_exp}}.
+[get_model_input_1exp()] and [fit_beta_mult_exp()].
 }
