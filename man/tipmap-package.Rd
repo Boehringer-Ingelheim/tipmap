@@ -6,6 +6,8 @@
 \alias{tipmap-package}
 \title{tipmap: Tipping Point Analysis for Bayesian Dynamic Borrowing}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Tipping point analysis for clinical trials that employ Bayesian dynamic borrowing via robust meta-analytic predictive (MAP) priors. Further functions facilitate expert elicitation of a primary weight of the informative component of the robust MAP prior and computation of operating characteristics. Intended use is the planning, analysis and interpretation of extrapolation studies in pediatric drug development, but applicability is generally wider.
 }
 \seealso{

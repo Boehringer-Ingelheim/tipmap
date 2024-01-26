@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# tipmap
+# tipmap <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 <!-- badges: start -->
 [![](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
