@@ -14,14 +14,14 @@ tipmap_lightred <- grDevices::rgb(204, 51, 51, max = 255)
 # generate sticker
 sticker(
   subplot = p,
-  img_path = "C:/RProgs/hex_sticker", 
+  #img_path = "/misc/hex_sticker", 
   package = "tipmap",
   p_size = 20,
-  s_x = 2.22, s_y = 1.475, s_width = 6.8, s_height = 4.5,
+  s_x = 2.32, s_y = 1.4075, s_width = 8.2, s_height = 6,
   p_y = 1.4,
   p_color = tipmap_lightred,
   h_fill = "white",
   h_color = tipmap_darkblue,
   white_around_sticker = TRUE,
-  filename = "hex_sticker_tipmap" # alt: "<...>.svg"
+  filename = "hex_sticker_tipmap.png" # alt: "<...>.svg"
 )
