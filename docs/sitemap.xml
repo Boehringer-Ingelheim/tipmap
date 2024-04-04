@@ -1,93 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/404.html</loc>
   </url>
   <url>
-    <loc>/articles/expert_elicitation.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/articles/expert_elicitation.html</loc>
   </url>
   <url>
-    <loc>/articles/index.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/articles/index.html</loc>
   </url>
   <url>
-    <loc>/articles/introduction.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/articles/introduction.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/authors.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/index.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/create_new_trial_data.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/create_new_trial_data.html</loc>
   </url>
   <url>
-    <loc>/reference/create_posterior_data.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/create_posterior_data.html</loc>
   </url>
   <url>
-    <loc>/reference/create_prior_data.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/create_prior_data.html</loc>
   </url>
   <url>
-    <loc>/reference/create_tipmap_data.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/create_tipmap_data.html</loc>
   </url>
   <url>
-    <loc>/reference/default_quantiles.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/default_quantiles.html</loc>
   </url>
   <url>
-    <loc>/reference/default_weights.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/default_weights.html</loc>
   </url>
   <url>
-    <loc>/reference/draw_beta_mixture_nsamples.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/draw_beta_mixture_nsamples.html</loc>
   </url>
   <url>
-    <loc>/reference/fit_beta_1exp.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/fit_beta_1exp.html</loc>
   </url>
   <url>
-    <loc>/reference/fit_beta_mult_exp.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/fit_beta_mult_exp.html</loc>
   </url>
   <url>
-    <loc>/reference/get_cum_probs_1exp.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/get_cum_probs_1exp.html</loc>
   </url>
   <url>
-    <loc>/reference/get_model_input_1exp.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/get_model_input_1exp.html</loc>
   </url>
   <url>
-    <loc>/reference/get_posterior_by_weight.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/get_posterior_by_weight.html</loc>
   </url>
   <url>
-    <loc>/reference/get_summary_mult_exp.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/get_summary_mult_exp.html</loc>
   </url>
   <url>
-    <loc>/reference/get_tipping_points.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/get_tipping_points.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/load_tipmap_data.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/load_tipmap_data.html</loc>
   </url>
   <url>
-    <loc>/reference/oc_bias.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/oc_bias.html</loc>
   </url>
   <url>
-    <loc>/reference/oc_coverage.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/oc_coverage.html</loc>
   </url>
   <url>
-    <loc>/reference/oc_pos.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/oc_pos.html</loc>
   </url>
   <url>
-    <loc>/reference/tipmap-package.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/tipmap-package.html</loc>
   </url>
   <url>
-    <loc>/reference/tipmap_darkblue.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/tipmap_darkblue.html</loc>
   </url>
   <url>
-    <loc>/reference/tipmap_lightred.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/tipmap_lightred.html</loc>
   </url>
   <url>
-    <loc>/reference/tipmap_plot.html</loc>
+    <loc>https://boehringer-ingelheim.github.io/tipmap/reference/tipmap_plot.html</loc>
   </url>
 </urlset>
