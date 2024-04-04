@@ -17,7 +17,7 @@ Description: Tipping point analysis for clinical trials that employ
     planning, analysis and interpretation of extrapolation studies in
     pediatric drug development, but applicability is generally wider.
 License: Apache License 2.0
-URL: https://github.com/Boehringer-Ingelheim/tipmap
+URL: https://github.com/Boehringer-Ingelheim/tipmap, https://boehringer-ingelheim.github.io/tipmap/
 BugReports: https://github.com/Boehringer-Ingelheim/tipmap/issues
 Depends: 
     R (>= 3.5.0)
@@ -44,4 +44,4 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 NeedsCompilation: no
 Repository: CRAN
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.1

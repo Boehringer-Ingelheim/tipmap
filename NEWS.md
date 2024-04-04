@@ -1,5 +1,6 @@
 ## tipmap 0.5.3
 
+* Adding package website (build using {pkgdown})
 * Adding option for highest posterior density intervals in `create_posterior_data()`.
 
 ## tipmap 0.5.2

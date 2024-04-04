@@ -14,6 +14,7 @@ Tipping point analysis for clinical trials that employ Bayesian dynamic borrowin
 Useful links:
 \itemize{
   \item \url{https://github.com/Boehringer-Ingelheim/tipmap}
+  \item \url{https://boehringer-ingelheim.github.io/tipmap/}
   \item Report bugs at \url{https://github.com/Boehringer-Ingelheim/tipmap/issues}
 }
 
