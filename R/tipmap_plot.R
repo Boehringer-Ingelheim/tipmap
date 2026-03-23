@@ -17,9 +17,9 @@
 #' @param null_effect The null treatment effect, determining where tipping points are calculated. Defaults to 0.
 #'
 #' @export
-#' 
+#'
 #' @seealso [create_tipmap_data()].
-#' 
+#'
 #' @return A \code{ggplot} object of the tipping point plot
 #' @examples
 #'
@@ -42,7 +42,7 @@ tipmap_plot <-
       stop("`null_effect` must be numeric")
     if (!(is.data.frame(tipmap_data)))
       stop("`tipmap_data` must be a data frame. Use create_tipmap_data()")
-    
+
     if (nrow(dplyr::filter(tipmap_data, x.col == "prior")) == 2) {
       x.labels <-
         c(target_pop_lab,
@@ -55,18 +55,18 @@ tipmap_plot <-
         c(target_pop_lab, seq(from = 0, to = 1, by = .1), map_prior_lab)
       x.breaks <- c(-0.15, seq(from = 0, to = 1, by = .1), 1.15)
     }
-    
-    
+
+
     if ((tipmap_data$t.0.025[tipmap_data$x.at == 1.15] - null_effect) *
         (tipmap_data$t.0.975[tipmap_data$x.at == 1.15] - null_effect) <= 0) {
       message("95% credible interval for MAP prior includes null treatment effect")
     }
-    
+
     if ((tipmap_data$t.0.025[tipmap_data$x.at == -0.15] - null_effect) *
         (tipmap_data$t.0.975[tipmap_data$x.at == -0.15] - null_effect) > 0) {
       message("Treatment effect in target population without borrowing")
     }
-    
+
     # base plot
     tpaPlot <- ggplot2::ggplot(data = tipmap_data,
                                ggplot2::aes(x = x.at, y = t.est,
@@ -117,6 +117,13 @@ tipmap_plot <-
                            linetype = "20%/80%",
                            colour = "20%/80%"
                          )) +
+      # draw solid line for combined 0.5-quantile of treatment effect
+      ggplot2::geom_line(data = tipmap_data,
+                         ggplot2::aes(
+                           y = t.est,
+                           linetype = "50%",
+                           colour = "50%"
+                         )) +
       # draw long-dashed line for combined 0.8-quantile of treatment effect
       ggplot2::geom_line(data = tipmap_data,
                          ggplot2::aes(
@@ -145,9 +152,9 @@ tipmap_plot <-
                            linetype = "2.5%/97.5%",
                            colour = "2.5%/97.5%"
                          ))
-    
+
     # for positive treatment effect in MAP prior
-    
+
     if (abs((min(abs(
       unlist(tipmap_data$t.0.025)
     ), na.rm = TRUE) - null_effect)) <
@@ -166,7 +173,7 @@ tipmap_plot <-
       tippingPoint.2 <- get_tipping_points(tipmap_data,
                                            quantile = 0.2,
                                            null_effect = null_effect)
-      
+
       if (tippingPoint.025 != 0 & tippingPoint.025 != 1 & !(is.na(tippingPoint.025))) {
         tpaPlot <- tpaPlot +
           ggplot2::geom_point(
@@ -237,7 +244,7 @@ tipmap_plot <-
         get_tipping_points(tipmap_data,
                            quantile = 0.8,
                            null_effect = null_effect)
-      
+
       if (tippingPoint.975 != 0 & tippingPoint.975 != 1 & !(is.na(tippingPoint.975))) {
         tpaPlot <- tpaPlot +
           ggplot2::geom_point(
@@ -302,6 +309,8 @@ tipmap_plot <-
       ggplot2::theme(
         panel.grid.minor.x = ggplot2::element_blank(),
         panel.grid.major.x = ggplot2::element_blank(),
+        legend.key.width = ggplot2::unit(2.0, "cm"),
+        legend.key.height = ggplot2::unit(0.6, "cm"),
         legend.position = "right"
       ) +
       ggplot2::xlab(x_lab) +
@@ -312,8 +321,10 @@ tipmap_plot <-
           "2.5%/97.5%" = tipmap_darkblue,
           "5%/95%" = tipmap_darkblue,
           "10%/90%" = tipmap_darkblue,
-          "20%/80%" = tipmap_darkblue
+          "20%/80%" = tipmap_darkblue,
+          "50%" = tipmap_darkblue
         ),
+        breaks = c("2.5%/97.5%", "5%/95%", "10%/90%", "20%/80%", "50%"),
         aesthetics = "colour"
       ) +
       ggplot2::scale_linetype_manual(
@@ -322,10 +333,12 @@ tipmap_plot <-
           "2.5%/97.5%" = "dotted",
           "5%/95%" = "dashed",
           "10%/90%" = "twodash",
-          "20%/80%" = "longdash"
-        )
+          "20%/80%" = "longdash",
+          "50%"        = "solid"
+        ),
+        breaks = c("2.5%/97.5%", "5%/95%", "10%/90%", "20%/80%", "50%")
       )
-    
+
     if (!(missing(y_range))) {
       tpaPlot <- tpaPlot +
         ggplot2::coord_cartesian(ylim = y_range)
@@ -334,6 +347,6 @@ tipmap_plot <-
       tpaPlot <- tpaPlot +
         ggplot2::scale_y_continuous(breaks = y_breaks)
     }
-    
+
     return(tpaPlot)
   }
