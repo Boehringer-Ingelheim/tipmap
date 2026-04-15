@@ -19,9 +19,15 @@
 #' )
 #'
 get_posterior_by_weight <- function(posterior, weight) {
-  if (!(is.numeric(weight))) stop("Weight must be numeric.")
+  assert_that(is.data.frame(posterior), msg = "`posterior` must be a data frame")
+  assert_that("weight" %in% names(posterior), msg = "`posterior` must contain a `weight` column")
+  assert_that(is.numeric(weight), msg = "`weight` must be numeric")
+  assert_that(all(is.finite(weight)), msg = "`weight` must be finite")
+  
   weights <- weight
-  posterior_filtered <- dplyr::filter(posterior, weight %in% weights)
-  posterior_filtered <- dplyr::select(posterior_filtered, -weight)
-  return(posterior_filtered)
+  
+  posterior_filtered <- posterior[posterior$weight %in% weights, , drop = FALSE]
+  posterior_filtered <- posterior_filtered[, setdiff(names(posterior_filtered), "weight"), drop = FALSE]
+  
+  posterior_filtered
 }

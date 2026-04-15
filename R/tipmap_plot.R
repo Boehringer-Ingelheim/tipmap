@@ -26,327 +26,314 @@
 #' tipmap_data <- load_tipmap_data("tipdat.rds")
 #' tipmap_plot(tipmap_data)
 #'
-tipmap_plot <-
-  function(tipmap_data,
-           target_pop_lab = "Trial in target\n population",
-           y_range = NULL,
-           y_breaks = NULL,
-           title = NULL,
-           y_lab = "Mean difference",
-           x_lab = "Weight on informative component of robust MAP prior",
-           map_prior_lab = "MAP\nprior",
-           meta_analysis_lab = "MA",
-           legend_title = "Posterior quantile",
-           null_effect = 0) {
-    if (!(is.numeric(null_effect)))
-      stop("`null_effect` must be numeric")
-    if (!(is.data.frame(tipmap_data)))
-      stop("`tipmap_data` must be a data frame. Use create_tipmap_data()")
+tipmap_plot <- function(
+    tipmap_data,
+    target_pop_lab = "Trial in target\n population",
+    y_range = NULL,
+    y_breaks = NULL,
+    title = NULL,
+    y_lab = "Mean difference",
+    x_lab = "Weight on informative component of robust MAP prior",
+    map_prior_lab = "MAP\nprior",
+    meta_analysis_lab = "MA",
+    legend_title = "Posterior quantile",
+    null_effect = 0
+) {
+  required_cols <- c(
+    "x.at", "x.col", "t.est",
+    "t.0.025", "t.0.05", "t.0.1", "t.0.2",
+    "t.0.8", "t.0.9", "t.0.95", "t.0.975"
+  )
+  
+  assert_that(is.numeric(null_effect), msg = "`null_effect` must be numeric")
+assert_that(length(null_effect) == 1, msg = "`null_effect` must be length 1")
+assert_that(is.finite(null_effect), msg = "`null_effect` must be finite")
+assert_that(is.data.frame(tipmap_data), msg = "`tipmap_data` must be a data frame. Use create_tipmap_data()")
+assert_that(all(required_cols %in% names(tipmap_data)), msg = "`tipmap_data` does not contain the required columns")
 
-    if (nrow(dplyr::filter(tipmap_data, x.col == "prior")) == 2) {
-      x.labels <-
-        c(target_pop_lab,
-          seq(from = 0, to = 1, by = .1),
-          map_prior_lab,
-          meta_analysis_lab)
-      x.breaks <- c(-0.15, seq(from = 0, to = 1, by = .1), 1.15, 1.35)
-    } else if (nrow(dplyr::filter(tipmap_data, x.col == "prior")) == 1) {
-      x.labels <-
-        c(target_pop_lab, seq(from = 0, to = 1, by = .1), map_prior_lab)
-      x.breaks <- c(-0.15, seq(from = 0, to = 1, by = .1), 1.15)
-    }
+n_prior <- nrow(dplyr::filter(tipmap_data, x.col == "prior"))
+assert_that(n_prior %in% c(1, 2), msg = "`tipmap_data` must contain one or two prior rows")
 
+if (n_prior == 2) {
+  x.labels <- c(target_pop_lab, seq(0, 1, by = 0.1), map_prior_lab, meta_analysis_lab)
+  x.breaks <- c(-0.15, seq(0, 1, by = 0.1), 1.15, 1.35)
+} else {
+  x.labels <- c(target_pop_lab, seq(0, 1, by = 0.1), map_prior_lab)
+  x.breaks <- c(-0.15, seq(0, 1, by = 0.1), 1.15)
+}
 
-    if ((tipmap_data$t.0.025[tipmap_data$x.at == 1.15] - null_effect) *
-        (tipmap_data$t.0.975[tipmap_data$x.at == 1.15] - null_effect) <= 0) {
-      message("95% credible interval for MAP prior includes null treatment effect")
-    }
+if ((tipmap_data$t.0.025[tipmap_data$x.at == 1.15] - null_effect) *
+    (tipmap_data$t.0.975[tipmap_data$x.at == 1.15] - null_effect) <= 0) {
+  message("95% credible interval for MAP prior includes null treatment effect")
+}
 
-    if ((tipmap_data$t.0.025[tipmap_data$x.at == -0.15] - null_effect) *
-        (tipmap_data$t.0.975[tipmap_data$x.at == -0.15] - null_effect) > 0) {
-      message("Treatment effect in target population without borrowing")
-    }
+if ((tipmap_data$t.0.025[tipmap_data$x.at == -0.15] - null_effect) *
+    (tipmap_data$t.0.975[tipmap_data$x.at == -0.15] - null_effect) > 0) {
+  message("Treatment effect in target population without borrowing")
+}
 
-    # base plot
-    tpaPlot <- ggplot2::ggplot(data = tipmap_data,
-                               ggplot2::aes(x = x.at, y = t.est,
-                                            colour = x.col)) +
-      ggplot2::ggtitle(title) +
-      # draw horizontal line for no treatment effect
-      ggplot2::geom_hline(yintercept = null_effect) +
-      # draw mean for target population, MAP prior and meta-analysis
-      ggplot2::geom_point(data = dplyr::filter(tipmap_data, x.col %in% c("new.obs", "prior")),
-                          colour = tipmap_darkblue) +
-      # draw errorbars for target population, MAP prior and meta-analysis
-      ggplot2::geom_errorbar(
-        data = dplyr::filter(tipmap_data, x.col %in% c("new.obs", "prior")),
-        ggplot2::aes(ymin = t.0.025, ymax = t.0.975),
-        colour = tipmap_darkblue,
-        width = .04
-      )
-    tipmap_data <-
-      dplyr::filter(tipmap_data, x.col == "post")
-    # draw line for combined treatment effect estimate
+tpaPlot <- ggplot2::ggplot(
+  data = tipmap_data,
+  ggplot2::aes(x = x.at, y = t.est, colour = x.col)
+) +
+  ggplot2::ggtitle(title) +
+  ggplot2::geom_hline(yintercept = null_effect) +
+  ggplot2::geom_point(
+    data = dplyr::filter(tipmap_data, x.col %in% c("new.obs", "prior")),
+    colour = tipmap_darkblue
+  ) +
+  ggplot2::geom_errorbar(
+    data = dplyr::filter(tipmap_data, x.col %in% c("new.obs", "prior")),
+    ggplot2::aes(ymin = t.0.025, ymax = t.0.975),
+    colour = tipmap_darkblue,
+    width = 0.04
+  )
+
+post_data <- dplyr::filter(tipmap_data, x.col == "post")
+
+tpaPlot <- tpaPlot +
+  ggplot2::geom_line(data = post_data, ggplot2::aes(y = t.est), colour = tipmap_darkblue) +
+  ggplot2::geom_line(data = post_data, ggplot2::aes(y = t.0.025, linetype = "2.5%/97.5%", colour = "2.5%/97.5%")) +
+  ggplot2::geom_line(data = post_data, ggplot2::aes(y = t.0.05, linetype = "5%/95%", colour = "5%/95%")) +
+  ggplot2::geom_line(data = post_data, ggplot2::aes(y = t.0.1, linetype = "10%/90%", colour = "10%/90%")) +
+  ggplot2::geom_line(data = post_data, ggplot2::aes(y = t.0.2, linetype = "20%/80%", colour = "20%/80%")) +
+  ggplot2::geom_line(data = post_data, ggplot2::aes(y = t.est, linetype = "50%", colour = "50%")) +
+  ggplot2::geom_line(data = post_data, ggplot2::aes(y = t.0.8, linetype = "20%/80%", colour = "20%/80%")) +
+  ggplot2::geom_line(data = post_data, ggplot2::aes(y = t.0.9, linetype = "10%/90%", colour = "10%/90%")) +
+  ggplot2::geom_line(data = post_data, ggplot2::aes(y = t.0.95, linetype = "5%/95%", colour = "5%/95%")) +
+  ggplot2::geom_line(data = post_data, ggplot2::aes(y = t.0.975, linetype = "2.5%/97.5%", colour = "2.5%/97.5%"))
+
+# add tipping-point annotations
+if (abs(min(abs(unlist(post_data$t.0.025)), na.rm = TRUE) - null_effect) <
+    abs(min(abs(unlist(post_data$t.0.975)), na.rm = TRUE) - null_effect)) {
+  
+  tippingPoint.025 <- get_tipping_points(
+    post_data,
+    quantile = 0.025,
+    null_effect = null_effect
+  )
+  tippingPoint.05 <- get_tipping_points(
+    post_data,
+    quantile = 0.05,
+    null_effect = null_effect
+  )
+  tippingPoint.1 <- get_tipping_points(
+    post_data,
+    quantile = 0.1,
+    null_effect = null_effect
+  )
+  tippingPoint.2 <- get_tipping_points(
+    post_data,
+    quantile = 0.2,
+    null_effect = null_effect
+  )
+  
+  if (tippingPoint.025 != 0 && tippingPoint.025 != 1 && !is.na(tippingPoint.025)) {
     tpaPlot <- tpaPlot +
-      ggplot2::geom_line(data = tipmap_data, ggplot2::aes(y = t.est), colour = tipmap_darkblue) +
-      # draw dotted line for combined 0.025-quantile of treatment effect
-      ggplot2::geom_line(data = tipmap_data,
-                         ggplot2::aes(
-                           y = t.0.025,
-                           linetype = "2.5%/97.5%",
-                           colour = "2.5%/97.5%"
-                         )) +
-      # draw dashed line for combined 0.05-quantile of treatment effect
-      ggplot2::geom_line(data = tipmap_data,
-                         ggplot2::aes(
-                           y = t.0.05,
-                           linetype = "5%/95%",
-                           colour = "5%/95%"
-                         )) +
-      # draw two-dashed line for combined 0.1-quantile of treatment effect
-      ggplot2::geom_line(data = tipmap_data,
-                         ggplot2::aes(
-                           y = t.0.1,
-                           linetype = "10%/90%",
-                           colour = "10%/90%"
-                         )) +
-      # draw long-dashed line for combined 0.2-quantile of treatment effect
-      ggplot2::geom_line(data = tipmap_data,
-                         ggplot2::aes(
-                           y = t.0.2,
-                           linetype = "20%/80%",
-                           colour = "20%/80%"
-                         )) +
-      # draw solid line for combined 0.5-quantile of treatment effect
-      ggplot2::geom_line(data = tipmap_data,
-                         ggplot2::aes(
-                           y = t.est,
-                           linetype = "50%",
-                           colour = "50%"
-                         )) +
-      # draw long-dashed line for combined 0.8-quantile of treatment effect
-      ggplot2::geom_line(data = tipmap_data,
-                         ggplot2::aes(
-                           y = t.0.8,
-                           linetype = "20%/80%",
-                           colour = "20%/80%"
-                         )) +
-      # draw two-dashed line for combined 0.9-quantile of treatment effect
-      ggplot2::geom_line(data = tipmap_data,
-                         ggplot2::aes(
-                           y = t.0.9,
-                           linetype = "10%/90%",
-                           colour = "10%/90%"
-                         )) +
-      # draw dashed line for combined 0.95-quantile of treatment effect
-      ggplot2::geom_line(data = tipmap_data,
-                         ggplot2::aes(
-                           y = t.0.95,
-                           linetype = "5%/95%",
-                           colour = "5%/95%"
-                         )) +
-      # draw dotted line for combined 0.975-quantile of treatment effect
-      ggplot2::geom_line(data = tipmap_data,
-                         ggplot2::aes(
-                           y = t.0.975,
-                           linetype = "2.5%/97.5%",
-                           colour = "2.5%/97.5%"
-                         ))
-
-    # for positive treatment effect in MAP prior
-
-    if (abs((min(abs(
-      unlist(tipmap_data$t.0.025)
-    ), na.rm = TRUE) - null_effect)) <
-    (abs(min(abs(
-      unlist(tipmap_data$t.0.975)
-    ), na.rm = TRUE) - null_effect))) {
-      tippingPoint.025 <- get_tipping_points(tipmap_data,
-                                             quantile = 0.025,
-                                             null_effect = null_effect)
-      tippingPoint.05 <- get_tipping_points(tipmap_data,
-                                            quantile = 0.05,
-                                            null_effect = null_effect)
-      tippingPoint.1 <- get_tipping_points(tipmap_data,
-                                           quantile = 0.1,
-                                           null_effect = null_effect)
-      tippingPoint.2 <- get_tipping_points(tipmap_data,
-                                           quantile = 0.2,
-                                           null_effect = null_effect)
-
-      if (tippingPoint.025 != 0 & tippingPoint.025 != 1 & !(is.na(tippingPoint.025))) {
-        tpaPlot <- tpaPlot +
-          ggplot2::geom_point(
-            data = tipmap_data,
-            ggplot2::aes(x = tippingPoint.025, y = t.0.025[x.at == tippingPoint.025]),
-            colour = tipmap_lightred
-          ) +
-          ggplot2::geom_vline(
-            ggplot2::aes(xintercept = tippingPoint.025),
-            colour = tipmap_lightred,
-            linetype = "dotted"
-          )
-      }
-      if (tippingPoint.05 != 0 & tippingPoint.05 != 1 & !(is.na(tippingPoint.05))) {
-        tpaPlot <- tpaPlot +
-          ggplot2::geom_point(
-            data = tipmap_data,
-            ggplot2::aes(x = tippingPoint.05, y = t.0.05[x.at == tippingPoint.05]),
-            colour = tipmap_lightred
-          ) +
-          ggplot2::geom_vline(
-            ggplot2::aes(xintercept = tippingPoint.05),
-            colour = tipmap_lightred,
-            linetype = "dotted"
-          )
-      }
-      if (tippingPoint.1 != 0 & tippingPoint.1 != 1 & !(is.na(tippingPoint.1))) {
-        tpaPlot <- tpaPlot +
-          ggplot2::geom_point(
-            data = tipmap_data,
-            ggplot2::aes(x = tippingPoint.1, y = t.0.1[x.at == tippingPoint.1]),
-            colour = tipmap_lightred
-          ) +
-          ggplot2::geom_vline(
-            ggplot2::aes(xintercept = tippingPoint.1),
-            colour = tipmap_lightred,
-            linetype = "dotted"
-          )
-      }
-      if (tippingPoint.2 != 0 & tippingPoint.2 != 1 & !(is.na(tippingPoint.2))) {
-        tpaPlot <- tpaPlot +
-          ggplot2::geom_point(
-            data = tipmap_data,
-            ggplot2::aes(x = tippingPoint.2,
-                         y = t.0.2[x.at == tippingPoint.2]),
-            colour = tipmap_lightred
-          ) +
-          ggplot2::geom_vline(
-            ggplot2::aes(xintercept = tippingPoint.2),
-            colour = tipmap_lightred,
-            linetype = "dotted"
-          )
-      }
-    } else {
-      tippingPoint.975 <-
-        get_tipping_points(tipmap_data,
-                           quantile = 0.975,
-                           null_effect = null_effect)
-      tippingPoint.95 <-
-        get_tipping_points(tipmap_data,
-                           quantile = 0.95,
-                           null_effect = null_effect)
-      tippingPoint.9 <-
-        get_tipping_points(tipmap_data,
-                           quantile = 0.9,
-                           null_effect = null_effect)
-      tippingPoint.8 <-
-        get_tipping_points(tipmap_data,
-                           quantile = 0.8,
-                           null_effect = null_effect)
-
-      if (tippingPoint.975 != 0 & tippingPoint.975 != 1 & !(is.na(tippingPoint.975))) {
-        tpaPlot <- tpaPlot +
-          ggplot2::geom_point(
-            data = tipmap_data,
-            ggplot2::aes(x = tippingPoint.975,
-                         y = t.0.975[x.at == tippingPoint.975]),
-            colour = tipmap_lightred
-          ) +
-          ggplot2::geom_vline(
-            ggplot2::aes(xintercept = tippingPoint.975),
-            colour = tipmap_lightred,
-            linetype = "dotted"
-          )
-      }
-      if (tippingPoint.95 != 0 & tippingPoint.95 != 1 & !(is.na(tippingPoint.95))) {
-        tpaPlot <- tpaPlot +
-          ggplot2::geom_point(
-            data = tipmap_data,
-            ggplot2::aes(x = tippingPoint.95,
-                         y = t.0.95[x.at == tippingPoint.95]),
-            colour = tipmap_lightred
-          ) +
-          ggplot2::geom_vline(
-            ggplot2::aes(xintercept = tippingPoint.95),
-            colour = tipmap_lightred,
-            linetype = "dotted"
-          )
-      }
-      if (tippingPoint.9 != 0 & tippingPoint.9 != 1 & !(is.na(tippingPoint.9))) {
-        tpaPlot <- tpaPlot +
-          ggplot2::geom_point(
-            data = tipmap_data,
-            ggplot2::aes(x = tippingPoint.9,
-                         y = t.0.9[x.at == tippingPoint.9]),
-            colour = tipmap_lightred
-          ) +
-          ggplot2::geom_vline(
-            ggplot2::aes(xintercept = tippingPoint.9),
-            colour = tipmap_lightred,
-            linetype = "dotted"
-          )
-      }
-      if (tippingPoint.8 != 0 & tippingPoint.8 != 1 & !(is.na(tippingPoint.8))) {
-        tpaPlot <- tpaPlot +
-          ggplot2::geom_point(
-            data = tipmap_data,
-            ggplot2::aes(x = tippingPoint.8,
-                         y = t.0.8[x.at == tippingPoint.8]),
-            colour = tipmap_lightred
-          ) +
-          ggplot2::geom_vline(
-            ggplot2::aes(xintercept = tippingPoint.8),
-            colour = tipmap_lightred,
-            linetype = "dotted"
-          )
-      }
-    }
-    # final twists and tweaks
-    tpaPlot <- tpaPlot +
-      ggplot2::scale_x_continuous(breaks = x.breaks, labels = x.labels) +
-      ggplot2::theme_bw() +
-      ggplot2::theme(
-        panel.grid.minor.x = ggplot2::element_blank(),
-        panel.grid.major.x = ggplot2::element_blank(),
-        legend.key.width = ggplot2::unit(2.0, "cm"),
-        legend.key.height = ggplot2::unit(0.6, "cm"),
-        legend.position = "right"
-      ) +
-      ggplot2::xlab(x_lab) +
-      ggplot2::ylab(y_lab) +
-      ggplot2::scale_colour_manual(
-        name = legend_title,
-        values = c(
-          "2.5%/97.5%" = tipmap_darkblue,
-          "5%/95%" = tipmap_darkblue,
-          "10%/90%" = tipmap_darkblue,
-          "20%/80%" = tipmap_darkblue,
-          "50%" = tipmap_darkblue
+      ggplot2::geom_point(
+        data = post_data,
+        ggplot2::aes(
+          x = tippingPoint.025,
+          y = t.0.025[x.at == tippingPoint.025]
         ),
-        breaks = c("2.5%/97.5%", "5%/95%", "10%/90%", "20%/80%", "50%"),
-        aesthetics = "colour"
+        colour = tipmap_lightred
       ) +
-      ggplot2::scale_linetype_manual(
-        name = legend_title,
-        values = c(
-          "2.5%/97.5%" = "dotted",
-          "5%/95%" = "dashed",
-          "10%/90%" = "twodash",
-          "20%/80%" = "longdash",
-          "50%"        = "solid"
-        ),
-        breaks = c("2.5%/97.5%", "5%/95%", "10%/90%", "20%/80%", "50%")
+      ggplot2::geom_vline(
+        ggplot2::aes(xintercept = tippingPoint.025),
+        colour = tipmap_lightred,
+        linetype = "dotted"
       )
-
-    if (!(missing(y_range))) {
-      tpaPlot <- tpaPlot +
-        ggplot2::coord_cartesian(ylim = y_range)
-    }
-    if (!(missing(y_breaks))) {
-      tpaPlot <- tpaPlot +
-        ggplot2::scale_y_continuous(breaks = y_breaks)
-    }
-
-    return(tpaPlot)
   }
+  
+  if (tippingPoint.05 != 0 && tippingPoint.05 != 1 && !is.na(tippingPoint.05)) {
+    tpaPlot <- tpaPlot +
+      ggplot2::geom_point(
+        data = post_data,
+        ggplot2::aes(
+          x = tippingPoint.05,
+          y = t.0.05[x.at == tippingPoint.05]
+        ),
+        colour = tipmap_lightred
+      ) +
+      ggplot2::geom_vline(
+        ggplot2::aes(xintercept = tippingPoint.05),
+        colour = tipmap_lightred,
+        linetype = "dotted"
+      )
+  }
+  
+  if (tippingPoint.1 != 0 && tippingPoint.1 != 1 && !is.na(tippingPoint.1)) {
+    tpaPlot <- tpaPlot +
+      ggplot2::geom_point(
+        data = post_data,
+        ggplot2::aes(
+          x = tippingPoint.1,
+          y = t.0.1[x.at == tippingPoint.1]
+        ),
+        colour = tipmap_lightred
+      ) +
+      ggplot2::geom_vline(
+        ggplot2::aes(xintercept = tippingPoint.1),
+        colour = tipmap_lightred,
+        linetype = "dotted"
+      )
+  }
+  
+  if (tippingPoint.2 != 0 && tippingPoint.2 != 1 && !is.na(tippingPoint.2)) {
+    tpaPlot <- tpaPlot +
+      ggplot2::geom_point(
+        data = post_data,
+        ggplot2::aes(
+          x = tippingPoint.2,
+          y = t.0.2[x.at == tippingPoint.2]
+        ),
+        colour = tipmap_lightred
+      ) +
+      ggplot2::geom_vline(
+        ggplot2::aes(xintercept = tippingPoint.2),
+        colour = tipmap_lightred,
+        linetype = "dotted"
+      )
+  }
+  
+} else {
+  
+  tippingPoint.975 <- get_tipping_points(
+    post_data,
+    quantile = 0.975,
+    null_effect = null_effect
+  )
+  tippingPoint.95 <- get_tipping_points(
+    post_data,
+    quantile = 0.95,
+    null_effect = null_effect
+  )
+  tippingPoint.9 <- get_tipping_points(
+    post_data,
+    quantile = 0.9,
+    null_effect = null_effect
+  )
+  tippingPoint.8 <- get_tipping_points(
+    post_data,
+    quantile = 0.8,
+    null_effect = null_effect
+  )
+  
+  if (tippingPoint.975 != 0 && tippingPoint.975 != 1 && !is.na(tippingPoint.975)) {
+    tpaPlot <- tpaPlot +
+      ggplot2::geom_point(
+        data = post_data,
+        ggplot2::aes(
+          x = tippingPoint.975,
+          y = t.0.975[x.at == tippingPoint.975]
+        ),
+        colour = tipmap_lightred
+      ) +
+      ggplot2::geom_vline(
+        ggplot2::aes(xintercept = tippingPoint.975),
+        colour = tipmap_lightred,
+        linetype = "dotted"
+      )
+  }
+  
+  if (tippingPoint.95 != 0 && tippingPoint.95 != 1 && !is.na(tippingPoint.95)) {
+    tpaPlot <- tpaPlot +
+      ggplot2::geom_point(
+        data = post_data,
+        ggplot2::aes(
+          x = tippingPoint.95,
+          y = t.0.95[x.at == tippingPoint.95]
+        ),
+        colour = tipmap_lightred
+      ) +
+      ggplot2::geom_vline(
+        ggplot2::aes(xintercept = tippingPoint.95),
+        colour = tipmap_lightred,
+        linetype = "dotted"
+      )
+  }
+  
+  if (tippingPoint.9 != 0 && tippingPoint.9 != 1 && !is.na(tippingPoint.9)) {
+    tpaPlot <- tpaPlot +
+      ggplot2::geom_point(
+        data = post_data,
+        ggplot2::aes(
+          x = tippingPoint.9,
+          y = t.0.9[x.at == tippingPoint.9]
+        ),
+        colour = tipmap_lightred
+      ) +
+      ggplot2::geom_vline(
+        ggplot2::aes(xintercept = tippingPoint.9),
+        colour = tipmap_lightred,
+        linetype = "dotted"
+      )
+  }
+  
+  if (tippingPoint.8 != 0 && tippingPoint.8 != 1 && !is.na(tippingPoint.8)) {
+    tpaPlot <- tpaPlot +
+      ggplot2::geom_point(
+        data = post_data,
+        ggplot2::aes(
+          x = tippingPoint.8,
+          y = t.0.8[x.at == tippingPoint.8]
+        ),
+        colour = tipmap_lightred
+      ) +
+      ggplot2::geom_vline(
+        ggplot2::aes(xintercept = tippingPoint.8),
+        colour = tipmap_lightred,
+        linetype = "dotted"
+      )
+  }
+}
+
+tpaPlot <- tpaPlot +
+  ggplot2::scale_x_continuous(breaks = x.breaks, labels = x.labels) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    panel.grid.minor.x = ggplot2::element_blank(),
+    panel.grid.major.x = ggplot2::element_blank(),
+    legend.key.width = ggplot2::unit(2.0, "cm"),
+    legend.key.height = ggplot2::unit(0.6, "cm"),
+    legend.position = "right"
+  ) +
+  ggplot2::xlab(x_lab) +
+  ggplot2::ylab(y_lab) +
+  ggplot2::scale_colour_manual(
+    name = legend_title,
+    values = c(
+      "2.5%/97.5%" = tipmap_darkblue,
+      "5%/95%" = tipmap_darkblue,
+      "10%/90%" = tipmap_darkblue,
+      "20%/80%" = tipmap_darkblue,
+      "50%" = tipmap_darkblue
+    ),
+    breaks = c("2.5%/97.5%", "5%/95%", "10%/90%", "20%/80%", "50%"),
+    aesthetics = "colour"
+  ) +
+  ggplot2::scale_linetype_manual(
+    name = legend_title,
+    values = c(
+      "2.5%/97.5%" = "dotted",
+      "5%/95%" = "dashed",
+      "10%/90%" = "twodash",
+      "20%/80%" = "longdash",
+      "50%" = "solid"
+    ),
+    breaks = c("2.5%/97.5%", "5%/95%", "10%/90%", "20%/80%", "50%")
+  )
+
+if (!is.null(y_range)) {
+  assert_that(is.numeric(y_range), msg = "`y_range` must be numeric")
+  assert_that(length(y_range) == 2, msg = "`y_range` must have length 2")
+  tpaPlot <- tpaPlot + ggplot2::coord_cartesian(ylim = y_range)
+}
+
+if (!is.null(y_breaks)) {
+  assert_that(is.numeric(y_breaks), msg = "`y_breaks` must be numeric")
+  tpaPlot <- tpaPlot + ggplot2::scale_y_continuous(breaks = y_breaks)
+}
+
+tpaPlot
+}
