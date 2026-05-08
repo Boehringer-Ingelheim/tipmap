@@ -1,11 +1,12 @@
 Type: Package
 Package: tipmap
 Title: Tipping Point Analysis for Bayesian Dynamic Borrowing
-Version: 0.5.3
+Version: 1.0.0
 Authors@R: c(
     person("Christian", "Stock", , "christian.stock@boehringer-ingelheim.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3493-3234")),
     person("Morten", "Dreher", role = "aut"),
+    person("Lars", "Andersen", , "lars.andersen@boehringer-ingelheim.com", role = "aut"),
     person("Emma", "Torrini", role = "ctb"),
     person(, "Boehringer Ingelheim Pharma GmbH & Co. KG", role = c("cph", "fnd"))
   )

@@ -1,3 +1,9 @@
+## tipmap 1.0.0
+
+* Enhancing `assertthat::assert_that()` input checks inside functions
+* Enhancing unit tests
+* Adding the median inside the tipmap plot function
+
 ## tipmap 0.5.3
 
 * Adding package website (build using {pkgdown})
