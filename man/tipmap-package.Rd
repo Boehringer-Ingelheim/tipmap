@@ -25,6 +25,7 @@ Useful links:
 Authors:
 \itemize{
   \item Morten Dreher
+  \item Lars Andersen \email{lars.andersen@boehringer-ingelheim.com}
 }
 
 Other contributors:
