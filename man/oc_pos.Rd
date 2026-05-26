@@ -12,7 +12,7 @@ oc_pos(
   map_prior,
   sigma,
   null_effect = 0,
-  direction_pos = T,
+  direction_pos = TRUE,
   n_cores = 1,
   eval_strategy = "sequential"
 )

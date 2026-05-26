@@ -44,65 +44,81 @@
 oc_pos <- function(
     m, se, probs, weights = seq(0, 1, by = 0.01),
     map_prior, sigma,
-    null_effect = 0, direction_pos = T,
+    null_effect = 0, direction_pos = TRUE,
     n_cores = 1, eval_strategy = "sequential"
-    ) {
-  # check inputs
-  assert_that(is.numeric(m))
-  assert_that(is.numeric(se))
-  assert_that(all(se > 0))
-  assert_that(length(m) == length(se))
-  assert_that(is.numeric(probs))
-  assert_that(all(probs > 0))
-  assert_that(all(probs < 1))
-  assert_that(is.numeric(weights))
-  assert_that(all(weights >= 0))
-  assert_that(all(weights <= 1))
-  assert_that("normMix" %in% class(map_prior))
-  assert_that(is.numeric(sigma))
-  assert_that(is.scalar(sigma))
-  assert_that(is.numeric(null_effect))
-  assert_that(is.flag(direction_pos))
-  assert_that(eval_strategy %in% c("sequential", "multisession", "multicore"))
-  assert_that(is.count(n_cores))
-  # function to compute posterior quantiles
-  # for one trial
-  oc_post_q <- function(
-    est, se, probs, weights, map_prior, sigma, 
-    null_effect, direction_pos
-  ) {
+) {
+  assert_that(is.numeric(m), msg = "`m` must be numeric")
+  assert_that(is.numeric(se), msg = "`se` must be numeric")
+  assert_that(length(m) == length(se), msg = "`m` and `se` must have the same length")
+  assert_that(all(is.finite(m)), msg = "`m` must be finite")
+  assert_that(all(is.finite(se)), msg = "`se` must be finite")
+  assert_that(all(se > 0), msg = "`se` must be positive")
+  
+  assert_that(is.numeric(probs), msg = "`probs` must be numeric")
+  assert_that(all(is.finite(probs)), msg = "`probs` must be finite")
+  assert_that(all(probs > 0 & probs < 1), msg = "`probs` must lie strictly between 0 and 1")
+  
+  assert_that(is.numeric(weights), msg = "`weights` must be numeric")
+  assert_that(all(is.finite(weights)), msg = "`weights` must be finite")
+  assert_that(all(weights >= 0 & weights <= 1), msg = "`weights` must lie in [0, 1]")
+  
+  assert_that("normMix" %in% class(map_prior), msg = "`map_prior` must be a normal mixture prior")
+  
+  assert_that(is.numeric(sigma), msg = "`sigma` must be numeric")
+  assert_that(is.scalar(sigma), msg = "`sigma` must be scalar")
+  assert_that(is.finite(sigma), msg = "`sigma` must be finite")
+  assert_that(sigma > 0, msg = "`sigma` must be positive")
+  
+  assert_that(is.numeric(null_effect), msg = "`null_effect` must be numeric")
+  assert_that(is.scalar(null_effect), msg = "`null_effect` must be scalar")
+  assert_that(is.finite(null_effect), msg = "`null_effect` must be finite")
+  
+  assert_that(is.logical(direction_pos), msg = "`direction_pos` must be logical")
+  assert_that(length(direction_pos) == 1, msg = "`direction_pos` must have length 1")
+  assert_that(!is.na(direction_pos), msg = "`direction_pos` must be TRUE or FALSE")
+  
+  assert_that(
+    eval_strategy %in% c("sequential", "multisession", "multicore"),
+    msg = "Invalid `eval_strategy`"
+  )
+  assert_that(is.count(n_cores), msg = "`n_cores` must be a positive whole number")
+  
+  oc_post_q <- function(est, se, probs, weights, map_prior, sigma, null_effect, direction_pos) {
     x <- array(dim = c(length(weights), length(probs)))
-    dimnames(x) <- list(paste("w=", weights, sep = ""),
-                        paste("q=", probs, sep = ""))
-    for (i in 1:length(weights)) {
-      w <- weights[i]
+    dimnames(x) <- list(paste0("w=", weights), paste0("q=", probs))
+    
+    for (i in seq_along(weights)) {
       robust.mix.prior <- RBesT::robustify(
         prior = map_prior,
-        weight = (1 - w),
+        weight = 1 - weights[i],
         m = 0,
         n = 1,
         sigma = sigma
       )
-      posterior <- RBesT::postmix(
-        robust.mix.prior,
-        m = est,
-        se = se
-      )
-      ifelse(
-        test = (direction_pos == T), 
-        yes = x[i,] <- RBesT::qmix(posterior, p = probs) > null_effect, 
-        no = x[i,] <- RBesT::qmix(posterior, p = probs) < null_effect
-      )
+      
+      posterior <- RBesT::postmix(robust.mix.prior, m = est, se = se)
+      qmix_vals <- RBesT::qmix(posterior, p = probs)
+      
+      if (direction_pos) {
+        x[i, ] <- qmix_vals > null_effect
+      } else {
+        x[i, ] <- qmix_vals < null_effect
+      }
     }
-    return(x)
+    
+    x
   }
-  # perform pos calculation 
-  ifelse(
-    test = (eval_strategy == "sequential"),
-    yes = future::plan(strategy = eval_strategy), 
-    no = future::plan(strategy = eval_strategy, workers = n_cores)
-  )
-  results <- furrr::future_map2(
+  
+  old_plan <- future::plan()
+  on.exit(future::plan(old_plan), add = TRUE)
+  
+  if (identical(eval_strategy, "sequential")) {
+    future::plan(strategy = eval_strategy)
+  } else {
+    future::plan(strategy = eval_strategy, workers = n_cores)
+  }
+  
+  furrr::future_map2(
     .x = m,
     .y = se,
     .f = ~ oc_post_q(
@@ -114,13 +130,11 @@ oc_pos <- function(
       sigma = sigma,
       null_effect = null_effect,
       direction_pos = direction_pos
-      ),
+    ),
     .options = furrr::furrr_options(),
     .env_globals = parent.frame(),
-    .progress = F
-    ) %>%
+    .progress = FALSE
+  ) %>%
     simplify2array() %>%
     apply(c(1, 2), mean)
-  if (!(eval_strategy == "sequential")) future::plan(strategy = "sequential")
-  return(results)
 }

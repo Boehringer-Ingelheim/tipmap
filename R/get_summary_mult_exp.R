@@ -20,21 +20,28 @@
 #'   n = 50
 #' )
 #'
-get_summary_mult_exp <- function(
-    chips_mult,
-    n = 500,
-    expert_weight = NULL) {
-  # check inputs
-  assert_that(is.matrix(chips_mult))
-  assert_that(is.numeric(chips_mult))
-  assert_that(is.count(n))
-  # compute summary statistics
-  if (missing(expert_weight))
+get_summary_mult_exp <- function(chips_mult, n = 500, expert_weight = NULL) {
+  assert_that(is.matrix(chips_mult) || is.data.frame(chips_mult), msg = "`chips_mult` must be a matrix or data frame")
+  chips_mult <- as.matrix(chips_mult)
+  assert_that(is.numeric(chips_mult), msg = "`chips_mult` must be numeric")
+  assert_that(is.count(n), msg = "`n` must be a positive whole number")
+  
+  if (is.null(expert_weight)) {
     expert_weight <- rep(1 / nrow(chips_mult), nrow(chips_mult))
+  } else {
+    assert_that(is.numeric(expert_weight), msg = "`expert_weight` must be numeric")
+    assert_that(length(expert_weight) == nrow(chips_mult), msg = "`expert_weight` must have one entry per expert")
+    assert_that(all(is.finite(expert_weight)), msg = "`expert_weight` must be finite")
+    assert_that(all(expert_weight >= 0), msg = "`expert_weight` must be non-negative")
+    assert_that(sum(expert_weight) > 0, msg = "`expert_weight` must sum to a positive value")
+    expert_weight <- expert_weight / sum(expert_weight)
+  }
+  
   samples <- draw_beta_mixture_nsamples(
-    n = n, 
-    chips_mult = chips_mult, 
+    n = n,
+    chips_mult = chips_mult,
     expert_weight = expert_weight
   )
-  return(base::summary(samples))
-  }
+  
+  base::summary(samples)
+}

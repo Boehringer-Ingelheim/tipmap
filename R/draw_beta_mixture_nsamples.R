@@ -28,40 +28,27 @@
 #' \dontrun{
 #' hist(rweights)
 #' }
-draw_beta_mixture_nsamples <- function(
-    n, chips_mult, expert_weight = NULL
-  ) {
-  # check inputs
-  assert_that(is.count(n))
-  assert_that(is.matrix(chips_mult))
-  assert_that(is.numeric(chips_mult))
-  if (missing(expert_weight)) {
-    expert_weight <- rep(1 / nrow(chips_mult), nrow(chips_mult)) 
+draw_beta_mixture_nsamples <- function(n, chips_mult, expert_weight = NULL) {
+  assert_that(is.count(n), msg = "`n` must be a positive whole number")
+  assert_that(is.matrix(chips_mult) || is.data.frame(chips_mult), msg = "`chips_mult` must be a matrix or data frame")
+  
+  chips_mult <- as.matrix(chips_mult)
+  
+  assert_that(is.numeric(chips_mult), msg = "`chips_mult` must be numeric")
+  assert_that(nrow(chips_mult) >= 1, msg = "`chips_mult` must have at least one row")
+  
+  if (is.null(expert_weight)) {
+    expert_weight <- rep(1 / nrow(chips_mult), nrow(chips_mult))
+  } else {
+    assert_that(is.numeric(expert_weight), msg = "`expert_weight` must be numeric")
+    assert_that(length(expert_weight) == nrow(chips_mult), msg = "`expert_weight` must have one entry per expert")
+    assert_that(all(is.finite(expert_weight)), msg = "`expert_weight` must be finite")
+    assert_that(all(expert_weight >= 0), msg = "`expert_weight` must be non-negative")
+    assert_that(sum(expert_weight) > 0, msg = "`expert_weight` must sum to a positive value")
+    expert_weight <- expert_weight / sum(expert_weight)
   }
-  # function to draw 1 sample
-  draw_beta_mixture_1sample <- function(params, expert_weight) {
-    params <- as.data.frame(params)
-    n_comp <- nrow(params)
-    comp_draw <- sample(
-      x = 1:n_comp,
-      size = 1,
-      prob = expert_weight
-    )
-    draw_beta_dist <- stats::rbeta(
-      n = 1,
-      shape1 = params[comp_draw, c("alpha")],
-      shape2 = params[comp_draw, c("beta")]
-    )
-    return(draw_beta_dist)
-  }
-  # draw n samples
-  samples <- numeric(length = n)
+  
   params <- fit_beta_mult_exp(chips_mult)
-  for (i in 1:n) {
-    samples[i] <- draw_beta_mixture_1sample(
-      params = params, 
-      expert_weight = expert_weight
-    )
-  }
-  return(samples)
+  comp_draw <- sample(seq_len(nrow(params)), size = n, replace = TRUE, prob = expert_weight)
+  stats::rbeta(n = n, shape1 = params$alpha[comp_draw], shape2 = params$beta[comp_draw])
 }

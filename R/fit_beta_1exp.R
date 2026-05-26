@@ -20,44 +20,62 @@
 #' y <- get_model_input_1exp(x)
 #' fit_beta_1exp(df = y)["par"] 
 #'
-fit_beta_1exp <- function (df) {
-  # check inputs
-  assert_that(is.data.frame(df))
-  assert_that(all(names(df) == c("w", "cum_probs")))
-  assert_that(is.numeric(df$w))
-  assert_that(is.numeric(df$cum_probs))
-  # beta fit function
+fit_beta_1exp <- function(df) {
+  assert_that(is.data.frame(df), msg = "`df` must be a data frame")
+  assert_that(all(names(df) == c("w", "cum_probs")), msg = "`df` must contain exactly `w` and `cum_probs`")
+  assert_that(is.numeric(df$w), msg = "`df$w` must be numeric")
+  assert_that(is.numeric(df$cum_probs), msg = "`df$cum_probs` must be numeric")
+  assert_that(all(is.finite(df$w)), msg = "`df$w` must be finite")
+  assert_that(all(is.finite(df$cum_probs)), msg = "`df$cum_probs` must be finite")
+  assert_that(all(df$cum_probs >= 0 & df$cum_probs <= 1), msg = "`df$cum_probs` must lie in [0, 1]")
+  assert_that(all(diff(df$cum_probs) >= 0), msg = "`df$cum_probs` must be non-decreasing")
+  
   w <- df$w
   cum_probs <- df$cum_probs
-  ## exclude cum_probs that are 0 or 1
   inc <- (cum_probs > 0) & (cum_probs < 1)
+  
+  assert_that(sum(inc) >= 2, msg = "Need at least two cumulative probabilities strictly between 0 and 1")
+  
   min_cum_probs <- min(cum_probs[inc])
   max_cum_probs <- max(cum_probs[inc])
   min_weight <- min(w[inc])
   max_weight <- max(w[inc])
-  ##
-  min_q <- qnorm(min_cum_probs)
-  max_q <- qnorm(max_cum_probs)
+  
+  min_q <- stats::qnorm(min_cum_probs)
+  max_q <- stats::qnorm(max_cum_probs)
+  
   m <- (min_weight * max_q - max_weight * min_q) / (max_q - min_q)
-  v <- ((max_weight - min_weight)/(max_q - min_q))^2
-  ## set starting values
-  alpha <- abs(m^3/v * (1/m - 1) - m)
-  beta <- abs(alpha/m - alpha)
-  if(identical(cum_probs[inc], w[inc])){
-    alpha <- beta <- 1
+  v <- ((max_weight - min_weight) / (max_q - min_q))^2
+  
+  alpha <- abs(m^3 / v * (1 / m - 1) - m)
+  beta <- abs(alpha / m - alpha)
+  
+  if (identical(cum_probs[inc], w[inc])) {
+    alpha <- 1
+    beta <- 1
   }
-  ## function to be optimized
+  
+  assert_that(is.finite(alpha), msg = "Failed to derive a finite starting value for `alpha`")
+  assert_that(is.finite(beta), msg = "Failed to derive a finite starting value for `beta`")
+  assert_that(alpha > 0, msg = "Starting value for `alpha` must be positive")
+  assert_that(beta > 0, msg = "Starting value for `beta` must be positive")
+  
   beta_error <- function(params, weight, probs) {
-    sum((pbeta(q = weight, shape1 = exp(params[1]), shape2 = exp(params[2])) -
-           probs)^2)
+    sum((stats::pbeta(q = weight, shape1 = exp(params[1]), shape2 = exp(params[2])) - probs)^2)
   }
-  ## optimization
-  beta_fit <- optim(par = c(log(alpha), log(beta)), fn = beta_error,
-                    weight = w[inc], probs = cum_probs[inc])
+  
+  beta_fit <- stats::optim(
+    par = c(log(alpha), log(beta)),
+    fn = beta_error,
+    weight = w[inc],
+    probs = cum_probs[inc]
+  )
+  
   if (beta_fit$convergence != 0) {
     warning("Algorithm did not converge.")
   }
+  
   beta_fit$par <- exp(beta_fit$par)
   names(beta_fit$par) <- c("alpha", "beta")
-  return(beta_fit)
+  beta_fit
 }

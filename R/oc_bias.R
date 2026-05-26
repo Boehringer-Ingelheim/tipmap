@@ -40,62 +40,60 @@ oc_bias <- function(
     m, se, true_effect, weights = seq(0, 1, by = 0.01),
     map_prior, sigma,
     n_cores = 1, eval_strategy = "sequential"
-  ) {
-  # check inputs
-  assert_that(is.numeric(m))
-  assert_that(is.numeric(se))
-  assert_that(all(se > 0))
-  assert_that(length(m) == length(se))
-  assert_that(is.numeric(true_effect))
-  assert_that(is.scalar(true_effect))
-  assert_that(is.numeric(weights))
-  assert_that(all(weights >= 0))
-  assert_that(all(weights <= 1))
-  assert_that("normMix" %in% class(map_prior))
-  assert_that(is.numeric(sigma))
-  assert_that(is.scalar(sigma))
-  assert_that(sigma > 0)
-  assert_that(eval_strategy %in% c("sequential", "multisession", "multicore"))
-  assert_that(is.count(n_cores))  
-  # vector of types of bias 
+) {
+  assert_that(is.numeric(m), msg = "`m` must be numeric")
+  assert_that(is.numeric(se), msg = "`se` must be numeric")
+  assert_that(length(m) == length(se), msg = "`m` and `se` must have the same length")
+  assert_that(all(is.finite(m)), msg = "`m` must be finite")
+  assert_that(all(is.finite(se)), msg = "`se` must be finite")
+  assert_that(all(se > 0), msg = "`se` must be positive")
+  assert_that(is.numeric(true_effect), msg = "`true_effect` must be numeric")
+  assert_that(is.scalar(true_effect), msg = "`true_effect` must be scalar")
+  assert_that(is.finite(true_effect), msg = "`true_effect` must be finite")
+  assert_that(is.numeric(weights), msg = "`weights` must be numeric")
+  assert_that(all(is.finite(weights)), msg = "`weights` must be finite")
+  assert_that(all(weights >= 0 & weights <= 1), msg = "`weights` must lie in [0, 1]")
+  assert_that("normMix" %in% class(map_prior), msg = "`map_prior` must be a normal mixture prior")
+  assert_that(is.numeric(sigma), msg = "`sigma` must be numeric")
+  assert_that(is.scalar(sigma), msg = "`sigma` must be scalar")
+  assert_that(is.finite(sigma), msg = "`sigma` must be finite")
+  assert_that(sigma > 0, msg = "`sigma` must be positive")
+  assert_that(eval_strategy %in% c("sequential", "multisession", "multicore"), msg = "Invalid `eval_strategy`")
+  assert_that(is.count(n_cores), msg = "`n_cores` must be a positive whole number")
+  
   oc_types <- c("abs.bias.post.mean", "abs.bias.post.median")
-  # function to compare posterior to truth for one trial
-  assess_one_trial <- function(
-    m, se, true_effect, weights, map_prior, sigma
-    ) {
-    # create 2-dimensional array
+  
+  assess_one_trial <- function(m, se, true_effect, weights, map_prior, sigma) {
     x <- array(dim = c(length(weights), length(oc_types)))
-    dimnames(x) <- list(
-      "weights" = paste("w=", weights, sep = ""),
-      "oc_types" = oc_types
-    )
-    # loop over weights
-    for (i in 1:length(weights)) {
-      w <- weights[i]
+    dimnames(x) <- list(weights = paste0("w=", weights), oc_types = oc_types)
+    
+    for (i in seq_along(weights)) {
       robust.mix.prior <- RBesT::robustify(
         prior = map_prior,
-        weight = (1 - w),
+        weight = 1 - weights[i],
         m = 0,
         n = 1,
         sigma = sigma
       )
       posterior <- RBesT::postmix(robust.mix.prior, m = m, se = se)
-      x[i, 1] <- summary(posterior)["mean"] - true_effect
-      old_w <- getOption("warn"); options(warn = -1)
-       q.post <- RBesT::qmix(mix = posterior, p = 0.5)
-       names(q.post) <- c("p0.5")
-       x[i, 2] <- q.post["p0.5"] - true_effect
-      options(warn = old_w)
+      x[i, 1] <- abs(summary(posterior)["mean"] - true_effect)
+      q.post <- RBesT::qmix(mix = posterior, p = 0.5)
+      x[i, 2] <- abs(unname(q.post) - true_effect)
     }
-  return(x)
+    
+    x
   }
-  # compute bias over a range of (simulated) trial results
-  ifelse(
-    test = (eval_strategy == "sequential"),
-    yes = future::plan(strategy = eval_strategy), 
-    no = future::plan(strategy = eval_strategy, workers = n_cores)
-  )
-  results <- furrr::future_map2(
+  
+  old_plan <- future::plan()
+  on.exit(future::plan(old_plan), add = TRUE)
+  
+  if (identical(eval_strategy, "sequential")) {
+    future::plan(strategy = eval_strategy)
+  } else {
+    future::plan(strategy = eval_strategy, workers = n_cores)
+  }
+  
+  furrr::future_map2(
     .x = m,
     .y = se,
     .f = ~ assess_one_trial(
@@ -105,13 +103,11 @@ oc_bias <- function(
       weights = weights,
       map_prior = map_prior,
       sigma = sigma
-      ),
+    ),
     .options = furrr::furrr_options(),
     .env_globals = parent.frame(),
-    .progress = F
-    ) %>%
+    .progress = FALSE
+  ) %>%
     simplify2array() %>%
     apply(c(1, 2), mean)
-  if (!(eval_strategy == "sequential")) future::plan(strategy = "sequential")
-  return(results)
 }

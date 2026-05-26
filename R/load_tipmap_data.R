@@ -14,7 +14,12 @@
 #' load_tipmap_data(file = "tipPost.rds")
 #'
 load_tipmap_data <- function(file) {
+  assert_that(is.character(file), msg = "`file` must be character")
+  assert_that(length(file) == 1, msg = "`file` must be length 1")
+  assert_that(!is.na(file) && nzchar(file), msg = "`file` must be a non-empty string")
+  
   path <- system.file("extdata", file, package = "tipmap")
-  data <- readRDS(path)
-  return(data)
+  assert_that(nzchar(path), msg = paste0("Could not find extdata file: ", file))
+  
+  readRDS(path)
 }

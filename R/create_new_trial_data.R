@@ -15,23 +15,31 @@
 #' )
 #'
 create_new_trial_data <- function(n_total, est, se) {
-  if (!(n_total == round(n_total)))
-    stop("`n_total` must be a whole number")
-  if (!(is.numeric(est)))
-    stop("`est` must be numeric")
-  if (!(is.numeric(se)))
-    stop("`se` must be numeric")
-  if ((se <= 0))
-    stop("`se` must be positive")
-  if ((length(n_total) != 1) ||
-      (length(est) != 1) || (length(se) != 1)) {
-    stop("Argments must be of length 1")
-  }
-  new_trial_data <- c(n_total, est, se,
-                      stats::qnorm(p = default_quantiles,
-                                   mean = est,
-                                   sd = se))
-  names(new_trial_data) <-
-    c("n_total", "mean", "se", paste0("q", default_quantiles))
-  return(new_trial_data)
+  assert_that(is.numeric(n_total), msg = "`n_total` must be numeric")
+  assert_that(length(n_total) == 1, msg = "`n_total` must be length 1")
+  assert_that(is.finite(n_total), msg = "`n_total` must be finite")
+  assert_that(n_total == round(n_total), msg = "`n_total` must be a whole number")
+  assert_that(n_total > 0, msg = "`n_total` must be positive")
+  
+  assert_that(is.numeric(est), msg = "`est` must be numeric")
+  assert_that(length(est) == 1, msg = "`est` must be length 1")
+  assert_that(is.finite(est), msg = "`est` must be finite")
+  
+  assert_that(is.numeric(se), msg = "`se` must be numeric")
+  assert_that(length(se) == 1, msg = "`se` must be length 1")
+  assert_that(is.finite(se), msg = "`se` must be finite")
+  assert_that(se > 0, msg = "`se` must be positive")
+  
+  new_trial_data <- c(
+    n_total,
+    est,
+    se,
+    stats::qnorm(p = default_quantiles, mean = est, sd = se)
+  )
+  
+  names(new_trial_data) <- c(
+    "n_total", "mean", "se", paste0("q", default_quantiles)
+  )
+  
+  new_trial_data
 }
