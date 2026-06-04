@@ -16,8 +16,22 @@
 #'
 get_cum_probs_1exp <- function(chips) {
   # check inputs
-  assert_that(is.numeric(chips))
-  assert_that(all((chips - floor(chips)) == 0))
+  assert_that(
+    is.numeric(chips) && all(is.finite(chips)),
+    msg = "`chips` must contain finite numeric values only."
+  )
+  assert_that(
+    all((chips - floor(chips)) == 0),
+    msg = "`chips` must contain whole numbers only."
+  )
+  assert_that(
+    all(chips >= 0),
+    msg = "`chips` must contain non-negative values only."
+  )
+  assert_that(
+    sum(chips) > 0,
+    msg = "`chips` must contain at least one positive value."
+  )
   # compute cumprobs
   sum_chips <- sum(chips)
   cum_probs <- cumsum(chips / sum_chips)
