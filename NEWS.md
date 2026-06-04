@@ -1,3 +1,7 @@
+## tipmap 1.0.1
+
+* Fix to address M1mac and noLD issues
+
 ## tipmap 1.0.0
 
 * Enhancing `assertthat::assert_that()` input checks inside functions
